@@ -13,7 +13,9 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
+
+from assistant_core.responder import Responder, StubLLMResponder, TemplateResponder
 
 log = logging.getLogger("assistant_core")
 
@@ -176,25 +178,6 @@ class Handbook:
         return best_rule if best_score > 0 else None
 
 
-class Responder(Protocol):
-    def explain(self, question: str, rule: Rule) -> str: ...
-
-
-class TemplateResponder:
-    def explain(self, question: str, rule: Rule) -> str:
-        return f"{rule.title}: {rule.text}"
-
-
-class StubLLMResponder:
-    def __init__(self, fail: bool = False) -> None:
-        self.fail = fail
-
-    def explain(self, question: str, rule: Rule) -> str:
-        if self.fail:
-            raise ProviderError("stub provider unavailable")
-        return f"Based on '{rule.title}': {rule.text}"
-
-
 GREETINGS = frozenset({"hi", "hello", "hey", "xin chao", "chao", "good morning"})
 
 
@@ -245,12 +228,12 @@ class AssistantService:
         settings: Any,
         offices: Any,
         handbook: Any,
-        responder: Any,
+        responder: Responder,
     ) -> None:
         self.settings = settings
         self.offices = offices
         self.handbook = handbook
-        self.responder = responder
+        self.responder: Responder = responder
         self.fallback = TemplateResponder()
 
     def handle(self, msg: Message) -> Response:
