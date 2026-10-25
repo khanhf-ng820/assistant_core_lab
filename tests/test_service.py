@@ -2,9 +2,12 @@
 
 from pathlib import Path
 
+import pytest
+
 from assistant_core.__main__ import execute_query, main
 from assistant_core.service import (
     AssistantService,
+    DataError,
     Handbook,
     Intent,
     Message,
@@ -135,3 +138,26 @@ def test_cli_main_argument(capsys):
     assert ret == 0
     captured = capsys.readouterr()
     assert "Hello" in captured.out
+
+
+def test_default_factory_with_environment_credit_rate(monkeypatch):
+    """Verify that AssistantService.default() loads environment settings such as CREDIT_RATE_VND."""
+    monkeypatch.setenv("CREDIT_RATE_VND", "600000")
+    service = AssistantService.default()
+    resp = service.handle(Message(text="tuition for 10 credits"))
+    assert resp.intent == Intent.FEE
+    assert "Your tuition is 6,000,000 VND." in resp.answer
+
+
+def test_default_factory_missing_offices_raises_data_error(tmp_path):
+    """Verify that missing offices.csv raises DataError instead of silent empty directory."""
+    with pytest.raises(DataError, match="office file not found"):
+        AssistantService.default(data_dir=tmp_path)
+
+
+def test_default_factory_missing_handbook_raises_data_error(tmp_path):
+    """Verify that missing handbook.json raises DataError instead of silent empty handbook."""
+    offices_csv = tmp_path / "offices.csv"
+    offices_csv.write_text("name,room,hours\nLibrary,B.201,08:00-17:00\n", encoding="utf-8")
+    with pytest.raises(DataError, match="handbook file not found"):
+        AssistantService.default(data_dir=tmp_path)
