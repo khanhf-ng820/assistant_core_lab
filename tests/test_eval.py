@@ -1,11 +1,21 @@
 import csv
 import runpy
 from pathlib import Path
-from assistant.rules import reply
+
+import pytest
+
+from assistant_core.rules import reply
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = ROOT / "eval" / "cases.csv"
 RUNNER_PATH = ROOT / "eval" / "run.py"
+
+# These Lab 2 assets are not shipped with the Lab 3 starter. If either file is
+# added, run the tests so a missing counterpart or malformed benchmark fails.
+pytestmark = pytest.mark.skipif(
+    not CASES_PATH.exists() and not RUNNER_PATH.exists(),
+    reason="Lab 2 benchmark CSV and runner are not included in this Lab 3 repository",
+)
 
 
 def test_cases_csv_exists_and_valid():
