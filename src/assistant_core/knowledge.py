@@ -67,7 +67,6 @@ class OfficeDirectory:
                 return office
 
         return None
-    
 @dataclass(frozen=True)
 class Rule:
     """A university handbook rule."""
