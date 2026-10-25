@@ -35,3 +35,5 @@ Every AI-assisted contribution in this repository undergoes the following 3-step
 1. **Inspect (`git diff`):** Verify every line of code generated to ensure no hallucinated packages, invalid API calls, or hidden security vulnerabilities exist.
 2. **Verify (`pytest -q`):** Execute full test suite to guarantee that existing functionality remains unbroken.
 3. **Disclose (`PR Description & AI Log`):** Document the tool used, prompt objective, and human modifications in the Pull Request body and this log file.
+
+| **25/10/2026** | Nguyễn Minh Khang (KaKaAkagami) | ChatGPT (OpenAI) | Generate an initial exam absence assistant using handbook rule H26-7.2 | Improved file-path handling with pathlib, refined intent detection, added structured error handling and data validation | 10 unit tests + 4 integration tests passed; Ruff checks passed; verified existing greeting and office lookup behavior |
