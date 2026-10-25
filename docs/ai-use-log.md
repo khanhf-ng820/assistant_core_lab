@@ -25,6 +25,7 @@ Undisclosed AI code generation is considered an academic integrity violation. Di
 | **18/10/2026** | Trần Phúc Khánh (issue #8) | OpenAI Codex | Document data sources, owners, and update frequency | Added a file inventory to `data/README.md`; retained sample-data status and existing security guidance | Codex checked the tracked inventory, CSV, loader, and regression suite; human author and reviewer inspection pending |
 | **18/10/2026** | Lý Tuấn Kiệt | Gemini 3.8 Flash | Support partial office name lookup in backend (`rules.py`) | Implemented clean name and substring partial matching logic in `rules.py`; added unit tests in `test_smoke.py` | Ran pytest suite (15/15 passed), check_env.py, and manual CLI verification |
 | **18/10/2026** | Lý Tuấn Kiệt | Gemini 3.8 Flash | Design how citations appear under answers (`docs/ui-sources.md`) | Drafted citation data schema, ASCII wireframes, Markdown mockups with 2 examples, and Streamlit implementation code | Verified Markdown rendering, reviewed alignment with Lab 02 acceptance criteria and DoD |
+| **24/10/2026** | Nguyễn Phúc Khánh (issue #1) | Antigravity (Gemini 3.8 Flash) | Implement AssistantService, CLI, and architecture documentation for Lab 03 | Scaffolding for AssistantService with DI, CLI with structured JSON logging, docs/architecture.md, and test_service.py | Ran pytest suite (11/11 passed), ruff lint/format clean, manual CLI verification |
 
 
 
