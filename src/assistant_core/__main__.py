@@ -11,7 +11,7 @@ import sys
 import time
 
 from assistant_core.logging_setup import setup_cli_logging
-from assistant_core.service import AssistantError, AssistantService, Message
+from assistant_core.service import AssistantError, AssistantService, Message, load_settings
 
 logger = logging.getLogger("assistant_core")
 
@@ -45,10 +45,19 @@ def execute_query(service: AssistantService, text: str, session_id: str = "local
 def main(argv: list[str] | None = None) -> int:
     """Entry point for CLI."""
     argv = sys.argv[1:] if argv is None else argv
-    setup_cli_logging()
 
     try:
-        service = AssistantService.default()
+        settings = load_settings()
+    except (AssistantError, OSError, ValueError) as exc:
+        setup_cli_logging()
+        logger.error(f"Failed to load settings: {exc}")
+        print(f"Startup error: {exc}", file=sys.stderr)
+        return 1
+
+    setup_cli_logging(settings.log_level)
+
+    try:
+        service = AssistantService.default(settings=settings)
     except (AssistantError, OSError, ValueError) as exc:
         logger.error(f"Failed to initialize AssistantService: {exc}")
         print(f"Startup error: {exc}", file=sys.stderr)

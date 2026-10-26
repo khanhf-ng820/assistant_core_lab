@@ -15,12 +15,10 @@ Week 4 by implementing ``explain`` and injecting it into the service.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
-if TYPE_CHECKING:
-    # Imported for type checkers only. At runtime ``service`` imports this
-    # module, so a top-level import would create a cycle.
-    from assistant_core.service import Rule
+from assistant_core.errors import ProviderError
+from assistant_core.knowledge import Rule
 
 
 @runtime_checkable
@@ -57,10 +55,5 @@ class StubLLMResponder:
 
     def explain(self, question: str, rule: Rule) -> str:
         if self.fail:
-            # Lazy import avoids a cycle with service.py, which imports this
-            # module. When the shared errors.py module lands, import
-            # ProviderError from there instead.
-            from assistant_core.service import ProviderError
-
             raise ProviderError("stub provider unavailable")
         return f"Based on '{rule.title}': {rule.text}"
