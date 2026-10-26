@@ -56,7 +56,7 @@ def setup_logging(level: str = "INFO", stream: TextIO | None = None) -> logging.
     core_logger.handlers.clear()
     core_logger.addHandler(handler)
     core_logger.setLevel(getattr(logging, level.upper(), logging.INFO))
-    core_logger.propagate = False
+    core_logger.propagate = True
 
     return core_logger
 
