@@ -1,8 +1,4 @@
-"""Core service layer for assistant_core.
-
-Implements AssistantService with dependency injection, intent routing,
-knowledge retrieval, deterministic fee computation, and fallback handling.
-"""
+"""Core service layer for assistant_core."""
 
 from __future__ import annotations
 
@@ -11,156 +7,52 @@ import json
 import logging
 import re
 from dataclasses import dataclass
-from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from assistant_core.responder import Responder, StubLLMResponder, TemplateResponder
-from assistant_core.router import GREETINGS, route
+from assistant_core.config import Settings, load_settings
+from assistant_core.errors import (
+    AssistantError,
+    ConfigError,
+    DataError,
+    InvalidRequest,
+    ProviderError,
+)
+from assistant_core.models import Intent, Message, Response, Source
+from assistant_core.responder import (
+    Responder,
+    StubLLMResponder,
+    TemplateResponder,
+)
+from assistant_core.router import route
 from assistant_core.tools import parse_credits, tuition
 
 log = logging.getLogger("assistant_core")
 
 __all__ = [
     "AssistantService",
-    "GREETINGS",
+    "AssistantError",
+    "ConfigError",
+    "DataError",
+    "InvalidRequest",
+    "ProviderError",
+    "Settings",
+    "load_settings",
+    "Intent",
+    "Message",
+    "Response",
+    "Source",
+    "Office",
+    "OfficeDirectory",
+    "Rule",
+    "Handbook",
+    "Responder",
+    "StubLLMResponder",
+    "TemplateResponder",
     "route",
     "parse_credits",
     "tuition",
 ]
-
-# ---------------------------------------------------------------------------
-# Contracts & Models (with self-contained fallbacks for unmerged modules)
-# ---------------------------------------------------------------------------
-
-try:
-    from assistant_core.errors import (
-        AssistantError,
-        ConfigError,
-        DataError,
-        InvalidRequest,
-        ProviderError,
-    )
-except ImportError:
-
-    class AssistantError(Exception):
-        """Base class for all assistant errors."""
-
-    class ConfigError(AssistantError):
-        """Configuration is missing or invalid."""
-
-    class DataError(AssistantError):
-        """A knowledge file is missing or malformed."""
-
-    class InvalidRequest(AssistantError):
-        """The user's request cannot be processed as given."""
-
-    class ProviderError(AssistantError):
-        """The AI provider failed (timeout, outage, bad response)."""
-
-
-try:
-    from assistant_core.config import Settings, load_settings
-except ImportError:
-    import os
-
-    @dataclass
-    class Settings:  # type: ignore[no-redef]
-        data_dir: Path = Path("data")
-        llm_provider: str = "stub"
-        llm_api_key: str | None = None
-        credit_rate_vnd: int = 450_000
-        retake_multiplier: float = 1.5
-        max_credits: int = 30
-        log_level: str = "INFO"
-
-    def load_settings(env_file: str | None = ".env") -> Settings:
-        if env_file:
-            try:
-                from dotenv import load_dotenv
-
-                load_dotenv(env_file, override=False)
-            except ImportError:
-                pass
-
-        return Settings(
-            data_dir=Path(os.getenv("ASSISTANT_DATA_DIR", "data")),
-            llm_provider=os.getenv("LLM_PROVIDER", "stub"),
-            llm_api_key=os.getenv("LLM_API_KEY") or None,
-            credit_rate_vnd=int(os.getenv("CREDIT_RATE_VND", "450000")),
-            retake_multiplier=float(os.getenv("RETAKE_MULTIPLIER", "1.5")),
-            max_credits=int(os.getenv("MAX_CREDITS", "30")),
-            log_level=os.getenv("LOG_LEVEL", "INFO"),
-        )
-
-
-try:
-    from assistant_core.models import Intent, Message, Response, Source
-except ImportError:
-    try:
-        from pydantic import BaseModel, Field
-
-        class Intent(str, Enum):
-            GREETING = "greeting"
-            FEE = "fee"
-            OFFICE = "office"
-            RULE = "rule"
-            HELP = "help"
-            UNKNOWN = "unknown"
-
-        class Message(BaseModel):
-            text: str = Field(min_length=1, max_length=2000)
-            session_id: str = "local"
-
-        class Source(BaseModel):
-            id: str
-            title: str
-
-        class Response(BaseModel):
-            answer: str
-            intent: Intent
-            sources: list[Source] = []
-            degraded: bool = False
-
-    except ImportError:
-        # Fallback if pydantic is not yet installed in local environment
-        class Intent(str, Enum):  # type: ignore[no-redef]
-            GREETING = "greeting"
-            FEE = "fee"
-            OFFICE = "office"
-            RULE = "rule"
-            HELP = "help"
-            UNKNOWN = "unknown"
-
-        @dataclass
-        class Message:  # type: ignore[no-redef]
-            text: str
-            session_id: str = "local"
-
-            def __post_init__(self) -> None:
-                if not (1 <= len(self.text) <= 2000):
-                    raise ValueError("text length must be between 1 and 2000 characters")
-
-        @dataclass
-        class Source:  # type: ignore[no-redef]
-            id: str
-            title: str
-
-        @dataclass
-        class Response:  # type: ignore[no-redef]
-            answer: str
-            intent: Intent
-            sources: list[Source] = None  # type: ignore[assignment]
-            degraded: bool = False
-
-            def __post_init__(self) -> None:
-                if self.sources is None:
-                    self.sources = []
-
-
-# ---------------------------------------------------------------------------
-# Sibling Module Interfaces (Fallback Implementations)
-# ---------------------------------------------------------------------------
 
 
 @dataclass(frozen=True)
@@ -225,33 +117,34 @@ class Handbook:
         return best_rule if best_score > 0 else None
 
 
-# ---------------------------------------------------------------------------
-# AssistantService Class (Member 1 Primary Deliverable)
-# ---------------------------------------------------------------------------
-
-
 class AssistantService:
-    """Central orchestrator for the study assistant service.
-
-    Accepts dependencies via constructor injection for testability and loose coupling.
-    Exposes handle(Message) -> Response as the single public entry point.
-    """
+    """Central orchestrator for the study assistant service."""
 
     def __init__(
         self,
         settings: Any,
         offices: Any,
         handbook: Any,
-        responder: Responder,
+        responder: Any,
     ) -> None:
         self.settings = settings
         self.offices = offices
         self.handbook = handbook
-        self.responder: Responder = responder
+        self.responder = responder
         self.fallback = TemplateResponder()
 
     def handle(self, msg: Message) -> Response:
         """Process incoming student message and return structured response."""
+        if msg.text.strip().lower().rstrip("?!.,") == "help":
+            return Response(
+                answer=(
+                    "I can help with campus offices, calculate tuition fees, "
+                    "and search academic rules. Try asking 'where is the training office?' "
+                    "or 'tuition for 18 credits'."
+                ),
+                intent=Intent.HELP,
+            )
+
         office_names = getattr(self.offices, "names", set())
         intent = route(msg.text, office_names)
 
@@ -264,7 +157,7 @@ class AssistantService:
         if intent is Intent.HELP:
             return Response(
                 answer=(
-                    "I can help you find campus offices, calculate tuition fees, "
+                    "I can help with campus offices, calculate tuition fees, "
                     "and search academic rules. Try asking 'where is the training office?' "
                     "or 'tuition for 18 credits'."
                 ),
@@ -289,7 +182,6 @@ class AssistantService:
         return self._rule(msg.text)
 
     def _fee(self, text: str) -> Response:
-        """Calculate tuition deterministically, handling user errors gracefully."""
         try:
             credits, retake = parse_credits(text)
             rate = getattr(self.settings, "credit_rate_vnd", 450_000)
@@ -304,7 +196,6 @@ class AssistantService:
             return Response(answer=str(exc), intent=Intent.FEE)
 
     def _rule(self, text: str) -> Response:
-        """Search handbook rules and explain via responder with fallback."""
         rule = self.handbook.search(text)
         if rule is None:
             return Response(
@@ -331,8 +222,7 @@ class AssistantService:
             )
 
     @classmethod
-    def default(cls, settings: Any = None, data_dir: Path | str | None = None) -> AssistantService:
-        """Convenience factory method to instantiate AssistantService with standard components."""
+    def default(cls, settings: Any = None, data_dir: Any = None) -> AssistantService:
         if settings is None:
             settings = load_settings()
 
