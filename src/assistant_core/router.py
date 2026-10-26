@@ -23,6 +23,16 @@ GREETINGS: frozenset[str] = frozenset(
     }
 )
 
+HELP_TRIGGERS: frozenset[str] = frozenset(
+    {
+        "help",
+        "tro giup",
+        "huong dan",
+        "support",
+        "help me",
+    }
+)
+
 
 def route(text: str, office_names: Iterable[str] | None = None) -> Intent:
     """Classify student input message into an Intent.
@@ -30,9 +40,10 @@ def route(text: str, office_names: Iterable[str] | None = None) -> Intent:
     Evaluation precedence:
         1. Empty / whitespace -> Intent.UNKNOWN
         2. Greeting match -> Intent.GREETING
-        3. Fee or tuition keywords -> Intent.FEE
-        4. Matching campus office directory name -> Intent.OFFICE
-        5. Fallback -> Intent.RULE
+        3. Help request match -> Intent.HELP
+        4. Fee or tuition keywords -> Intent.FEE
+        5. Matching campus office directory name -> Intent.OFFICE
+        6. Fallback -> Intent.RULE
 
     Args:
         text: Student message text.
@@ -47,6 +58,9 @@ def route(text: str, office_names: Iterable[str] | None = None) -> Intent:
 
     if normalized in GREETINGS:
         return Intent.GREETING
+
+    if normalized in HELP_TRIGGERS:
+        return Intent.HELP
 
     if "fee" in normalized or "tuition" in normalized:
         return Intent.FEE
