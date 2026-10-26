@@ -1,4 +1,22 @@
-from assistant.rules import reply, load_offices
+import pytest
+
+from assistant_core.rules import load_offices, reply
+
+
+@pytest.fixture
+def extra_offices():
+    """Legacy office examples are test data, not part of the Lab 3 sample CSV."""
+    examples = [
+        ("Health Center", "A.105"),
+        ("International Office", "F.203"),
+        ("Testing & Quality Assurance", "A.02"),
+        ("Postgraduate Studies", "B.03"),
+        ("Youth Union Office", "B.04"),
+        ("Dormitory Management Office", "H.101"),
+        ("Center for IT Application", "E.102"),
+        ("Educational Testing Office", "A.103"),
+    ]
+    return {name.lower(): {"name": name, "room": room, "hours": "Mon-Fri 08:00-17:00"} for name, room in examples}
 
 
 def test_greeting():
@@ -17,13 +35,12 @@ def test_empty():
     assert reply("   ") == "Please type a question."
 
 
-def test_health_center_lookup():
-    assert "A.105" in reply("Where is the Health Center?")
+def test_health_center_lookup(extra_offices):
+    assert "A.105" in reply("Where is the Health Center?", offices=extra_offices)
 
 
-def test_international_office_lookup():
-    assert "F.203" in reply("When does the International Office open?")
-
+def test_international_office_lookup(extra_offices):
+    assert "F.203" in reply("When does the International Office open?", offices=extra_offices)
 
 
 def test_help():
@@ -39,7 +56,6 @@ def test_help():
 
     # Trailing punctuation
     assert "I can help you find offices" in reply("help?!")
-
 
 
 def test_greeting_good_morning():
@@ -88,17 +104,15 @@ def test_office_csv_required_fields():
         assert name == office["name"].lower()
         assert office["room"].strip()
         assert office["hours"].strip()
-def test_new_offices_lookup():
-    from assistant.rules import reply
-    
-    assert "A.02" in reply("where is testing & quality assurance?")
-    assert "B.03" in reply("where is postgraduate studies?")
-    assert "B.04" in reply("where is youth union office?")
-    assert "H.101" in reply("where is dormitory management office?")
-    assert "E.102" in reply("where is center for it application?")
-    assert "A.103" in reply("where is educational testing office?")
 
-    
+
+def test_new_offices_lookup(extra_offices):
+    assert "A.02" in reply("where is testing & quality assurance?", offices=extra_offices)
+    assert "B.03" in reply("where is postgraduate studies?", offices=extra_offices)
+    assert "B.04" in reply("where is youth union office?", offices=extra_offices)
+    assert "H.101" in reply("where is dormitory management office?", offices=extra_offices)
+    assert "E.102" in reply("where is center for it application?", offices=extra_offices)
+    assert "A.103" in reply("where is educational testing office?", offices=extra_offices)
 
 
 def test_partial_name_training():
@@ -108,13 +122,12 @@ def test_partial_name_training():
     assert "I.101" in result
 
 
-def test_partial_name_in_question():
+def test_partial_name_in_question(extra_offices):
     """Check that partial office names work inside questions or for other offices."""
     result_training = reply("Where is training?")
     assert "Training Office" in result_training
     assert "I.101" in result_training
 
-    result_health = reply("health")
+    result_health = reply("health", offices=extra_offices)
     assert "Health Center" in result_health
     assert "A.105" in result_health
-
