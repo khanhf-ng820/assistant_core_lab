@@ -29,6 +29,7 @@ Undisclosed AI code generation is considered an academic integrity violation. Di
 
 
 
+| **26/10/2026** | Nguyễn Phúc Khánh | OpenCode | Add a help command to AssistantService with exact-match routing and tests | Implemented help handling in `service.py`, added `tests/test_help.py`, documented the review in `docs/lab3/ai_extension_review_khanhf-ng820.md` | Ran `pytest -q` and `ruff check .`; verified help and non-hijack cases manually |
 ---
 
 ## 3. Human Inspection Protocol
