@@ -104,6 +104,7 @@ except ImportError:
             FEE = "fee"
             OFFICE = "office"
             RULE = "rule"
+            HELP = "help"
             UNKNOWN = "unknown"
 
         class Message(BaseModel):
@@ -127,6 +128,7 @@ except ImportError:
             FEE = "fee"
             OFFICE = "office"
             RULE = "rule"
+            HELP = "help"
             UNKNOWN = "unknown"
 
         @dataclass
@@ -274,6 +276,16 @@ class AssistantService:
         if intent is Intent.GREETING:
             return Response(
                 answer="Hello! I can help with offices, fees and rules.",
+                intent=intent,
+            )
+
+        if intent is Intent.HELP:
+            return Response(
+                answer=(
+                    "I can help you find campus offices, calculate tuition fees, "
+                    "and search academic rules. Try asking 'where is the training office?' "
+                    "or 'tuition for 18 credits'."
+                ),
                 intent=intent,
             )
 

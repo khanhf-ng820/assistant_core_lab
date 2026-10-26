@@ -30,8 +30,7 @@ Undisclosed AI code generation is considered an academic integrity violation. Di
 | **24/10/2026** | Nguyễn Phúc Khánh (issue #1) | Antigravity (Gemini 3.8 Flash) | Implement AssistantService, CLI, and architecture documentation for Lab 03 | Scaffolding for AssistantService with DI, CLI with structured JSON logging, docs/architecture.md, and test_service.py | Ran pytest suite (11/11 passed), ruff lint/format clean, manual CLI verification |
 | **25/10/2026** | Lý Tuấn Kiệt (issue #13) | Antigravity (Gemini 3.8 Flash) | Implement pure tuition tools, credit parser, intent router, and characterisation tests | Implemented `src/assistant_core/tools.py`, `src/assistant_core/router.py`, `tests/test_tools.py`, `tests/test_router.py`, and integrated with `service.py` | Executed `pytest -v` (99 passed, 4 skipped); `ruff check .` clean (0 errors); verified legacy parity with monolith |
 | **26/10/2026** | Lý Tuấn Kiệt (PR #14) | Antigravity (Gemini 3.8 Flash) | Address PR review comments: document `InvalidRequest` contract & add edge-case tests | Updated `docs/architecture.md`, `src/assistant_core/tools.py` docstrings, and added edge-case unit tests in `tests/test_tools.py` | Ran `pytest` suite (106 passed, 4 skipped); `ruff check .` clean (0 errors) |
-
-
+| **26/10/2026** | Đặng Xuân Phát (H1) | Antigravity (Gemini 3.8 Flash) | Implement help command feature extension, router support, and test suite | Added `Intent.HELP` to `models.py`, `HELP_TRIGGERS` to `router.py`, `service.handle()` support, `tests/test_help.py`, and documented in `docs/lab3/ai_extension_review.md` | Ran pytest suite (110 passed, 4 skipped), ruff check . (clean), ruff check --select BLE . (clean) |
 
 ---
 
