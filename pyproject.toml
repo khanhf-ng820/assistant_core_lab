@@ -21,7 +21,9 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 120
-extend-exclude = ["lab03"]
+# The monolith is the intentionally bad "before" example, and src/assistant-core
+# is the superseded starter package; neither belongs to assistant_core.
+extend-exclude = ["lab03/monolith", "src/assistant-core"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "BLE"]
