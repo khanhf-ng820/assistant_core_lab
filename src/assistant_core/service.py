@@ -50,6 +50,41 @@ except ImportError:
 
 
 try:
+    from assistant_core.config import Settings, load_settings
+except ImportError:
+    import os
+
+    @dataclass
+    class Settings:  # type: ignore[no-redef]
+        data_dir: Path = Path("data")
+        llm_provider: str = "stub"
+        llm_api_key: str | None = None
+        credit_rate_vnd: int = 450_000
+        retake_multiplier: float = 1.5
+        max_credits: int = 30
+        log_level: str = "INFO"
+
+    def load_settings(env_file: str | None = ".env") -> Settings:
+        if env_file:
+            try:
+                from dotenv import load_dotenv
+
+                load_dotenv(env_file, override=False)
+            except ImportError:
+                pass
+
+        return Settings(
+            data_dir=Path(os.getenv("ASSISTANT_DATA_DIR", "data")),
+            llm_provider=os.getenv("LLM_PROVIDER", "stub"),
+            llm_api_key=os.getenv("LLM_API_KEY") or None,
+            credit_rate_vnd=int(os.getenv("CREDIT_RATE_VND", "450000")),
+            retake_multiplier=float(os.getenv("RETAKE_MULTIPLIER", "1.5")),
+            max_credits=int(os.getenv("MAX_CREDITS", "30")),
+            log_level=os.getenv("LOG_LEVEL", "INFO"),
+        )
+
+
+try:
     from assistant_core.models import Intent, Message, Response, Source
 except ImportError:
     try:
@@ -309,32 +344,23 @@ class AssistantService:
     @classmethod
     def default(cls, settings: Any = None, data_dir: Path | str | None = None) -> AssistantService:
         """Convenience factory method to instantiate AssistantService with standard components."""
-        # Resolve data directory
-        if data_dir is not None:
-            base_data = Path(data_dir)
-        elif settings is not None and hasattr(settings, "data_dir"):
-            base_data = Path(settings.data_dir)
-        else:
-            repo_root = Path(__file__).resolve().parents[2]
-            base_data = repo_root / "data"
-
-        # Mock settings if none provided
         if settings is None:
+            settings = load_settings()
 
-            class DefaultSettings:
-                data_dir = base_data
-                credit_rate_vnd = 450_000
-                retake_multiplier = 1.5
-                max_credits = 30
-                log_level = "INFO"
+        if data_dir is not None:
+            settings.data_dir = Path(data_dir)
 
-            settings = DefaultSettings()
+        base_data = Path(getattr(settings, "data_dir", "data"))
+        if not base_data.is_absolute() and not base_data.is_dir():
+            repo_root = Path(__file__).resolve().parents[2]
+            if (repo_root / base_data).is_dir():
+                base_data = repo_root / base_data
 
         offices_file = base_data / "offices.csv"
         handbook_file = base_data / "handbook.json"
 
-        offices = OfficeDirectory.from_csv(offices_file) if offices_file.is_file() else OfficeDirectory({})
-        handbook = Handbook.from_json(handbook_file) if handbook_file.is_file() else Handbook([])
+        offices = OfficeDirectory.from_csv(offices_file)
+        handbook = Handbook.from_json(handbook_file)
         responder = StubLLMResponder()
 
         return cls(
