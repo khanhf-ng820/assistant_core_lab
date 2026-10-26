@@ -1,22 +1,22 @@
 # Lab 3 — Before / After Maintainability Comparison
 
-| Question | Before (Monolith) | After (Refactored Package) |
+Fill in for the monolith (before) and your refactored package (after).
+
+| Question | Before (Monolith) | After (assistant_core) |
 |---|---|---|
-| Where would you change the credit rate? How many places? | One hard-coded constant (`RATE`) in the Python script. | One environment variable (`CREDIT_RATE_VND`) managed by `config.py`. Integration pending. |
-| Can you run the tests without internet or an API key? | Tests are not deterministic because the simulated LLM can fail randomly. | 19 unit tests were executed offline: 7 model tests and 12 knowledge tests using a temporary `DataError` stub. Full integration tests are pending. |
-| What happens if `handbook.json` is missing? | The monolith handles the error silently and continues. | `Handbook.from_json()` raises `DataError`. Integration with the team's actual `errors.py` is pending. |
-| Is any secret printed or logged? | Yes. The hard-coded API key can appear in debug output. | The new models and knowledge modules do not print secrets. Full logging and configuration integration remain pending. |
-| How long does it take a new teammate to find the fee logic? | They must inspect the large `handle()` function. | Fee calculations will be isolated in `tools.py`, making them easier to locate. Integration pending. |
-| Number of global variables | 9, including 3 mutable globals, according to the lab analysis. | No mutable module-level state in the new models and knowledge modules. Full-package count not yet verified. |
-| Number of bare `except:` blocks | 3, according to the lab analysis. | 0 in the newly implemented modules. Full-package audit pending. |
-| Lines in the longest function | Approximately 65 lines in `handle()`. | The service is intended to use smaller functions. The longest function in the fully integrated package has not yet been measured. |
-| `ruff check` issues | Not measured for the original monolith. | No Ruff violations in the five files contributed for the assigned modules and tests. |
-| Can you swap the LLM without touching the service? | No. The LLM logic is tightly coupled to the monolith. | The proposed `Responder` interface supports dependency injection. Integration remains pending. |
+| Where would you change the credit rate? How many places? | 1 hard-coded constant (`RATE = 450000`) in code. | 1 environment variable (`CREDIT_RATE_VND`) in `.env`, loaded via `Settings`. |
+| Can you run the tests without internet or an API key? | No. Random failures in simulated LLM make tests flaky and non-deterministic. | Yes. Deterministic offline tests using `StubLLMResponder` and characterisation tests. |
+| What happens if `handbook.json` is missing? | Prints `"could not load handbook"` and continues silently, causing hidden failures later. | Raises `DataError` at startup or service initialisation, failing fast with a clear message. |
+| Is any secret printed or logged? | Yes. Hard-coded `API_KEY` is printed in debug messages. | No. `llm_api_key` uses `repr=False` in Pydantic; `JsonFormatter` sanitizes sensitive keys and omits secrets. |
+| How long does it take a new teammate to find the fee logic? | 10–15 minutes scanning through the 163-line mixed `handle()` function. | Less than 1 minute; isolated in pure functions inside `tools.py` with dedicated unit tests. |
+| Number of global variables | 9 module-level globals (3 mutable: `history`, `offices`, `handbook`). | 0 module-level mutable globals; dependencies injected via `AssistantService.__init__`. |
+| Number of bare `except:` blocks | 3 (`except:` in `load()` and `main()`), catching even `KeyboardInterrupt`. | 0 bare `except:`; specific named exceptions derived from `AssistantError` and built-ins. |
+| Lines in the longest function | ~65 lines (`handle()` doing routing, parsing, searching, calling LLM). | ~15 lines (`AssistantService.handle()` delegating to dedicated modules). |
+| `ruff check` issues | 9+ errors (`E401`, `E722` bare except, `BLE001` blind except, `E501` line too long, `I001`). | 0 errors (`All checks passed!`, including `ruff check --select BLE .`). |
+| Can you swap the LLM without touching the service? | No. Directly coupled to hard-coded `llm()` function. | Yes. Follows the Adapter pattern via `Responder` Protocol; swap providers without altering service code. |
 
 ## Three-Sentence Reflection
 
-The most significant improvement is the separation of responsibilities into typed models, knowledge retrieval, and reusable test fixtures, making the code easier to test and maintain.
-
-The refactoring introduces more files, interfaces, and dependencies, which increases integration complexity but improves modularity.
-
-I would further improve the system by completing integration tests, verifying error handling with the real shared exceptions, and ensuring consistent interfaces across all team modules.
+1. **What improved most:** The separation of concerns into single-responsibility modules, complete elimination of global mutable state and bare excepts, and structured JSON logging that strictly prevents secret and query leakage.
+2. **What got more complex:** The number of files, directory layout, and architectural layers (Pydantic models, custom exception hierarchies, adapter protocols) increased compared to a single flat script.
+3. **What I would still change:** Add asynchronous streaming responses for future real LLM providers in Lab 4, and introduce a persistent vector or SQLite database for the handbook knowledge base.

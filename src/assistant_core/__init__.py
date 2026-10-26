@@ -1,3 +1,7 @@
-"""Starter package for the CSC10014 Smart Virtual Assistant."""
+"""assistant_core package — maintainable study assistant service."""
 
-__version__ = "0.1.0"
+from .service import AssistantService
+
+__version__ = "0.3.0"
+
+__all__ = ["AssistantService", "__version__"]

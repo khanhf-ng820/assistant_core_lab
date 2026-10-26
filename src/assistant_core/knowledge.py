@@ -67,6 +67,8 @@ class OfficeDirectory:
                 return office
 
         return None
+
+
 @dataclass(frozen=True)
 class Rule:
     """A university handbook rule."""
@@ -106,10 +108,7 @@ class Handbook:
 
             required = ("id", "title", "text")
 
-            if not all(
-                isinstance(item.get(field), str) and item[field].strip()
-                for field in required
-            ):
+            if not all(isinstance(item.get(field), str) and item[field].strip() for field in required):
                 raise DataError(f"Invalid rule data at position {index}.")
 
             rules.append(
@@ -133,17 +132,10 @@ class Handbook:
         best_score = 0
 
         for rule in self._rules:
-            title_words = set(
-                re.findall(r"[a-z0-9]+", rule.title.lower())
-            )
-            text_words = set(
-                re.findall(r"[a-z0-9]+", rule.text.lower())
-            )
+            title_words = set(re.findall(r"[a-z0-9]+", rule.title.lower()))
+            text_words = set(re.findall(r"[a-z0-9]+", rule.text.lower()))
 
-            score = (
-                2 * len(keywords & title_words)
-                + len(keywords & text_words)
-            )
+            score = 2 * len(keywords & title_words) + len(keywords & text_words)
 
             if score > best_score:
                 best_score = score
