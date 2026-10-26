@@ -13,7 +13,9 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
+
+from assistant_core.responder import Responder, StubLLMResponder, TemplateResponder
 
 from assistant_core.router import GREETINGS, route
 from assistant_core.tools import parse_credits, tuition
@@ -104,6 +106,7 @@ except ImportError:
             FEE = "fee"
             OFFICE = "office"
             RULE = "rule"
+            HELP = "help"
             UNKNOWN = "unknown"
 
         class Message(BaseModel):
@@ -127,6 +130,7 @@ except ImportError:
             FEE = "fee"
             OFFICE = "office"
             RULE = "rule"
+            HELP = "help"
             UNKNOWN = "unknown"
 
         @dataclass
@@ -222,23 +226,37 @@ class Handbook:
         return best_rule if best_score > 0 else None
 
 
-class Responder(Protocol):
-    def explain(self, question: str, rule: Rule) -> str: ...
+GREETINGS = frozenset({"hi", "hello", "hey", "xin chao", "chao", "good morning"})
 
 
-class TemplateResponder:
-    def explain(self, question: str, rule: Rule) -> str:
-        return f"{rule.title}: {rule.text}"
+def route(text: str, office_names: set[str]) -> Intent:
+    t = text.lower().strip().rstrip("?!.")
+    if t in GREETINGS:
+        return Intent.GREETING
+    if "fee" in t or "tuition" in t:
+        return Intent.FEE
+    if any(name in t for name in office_names):
+        return Intent.OFFICE
+    return Intent.RULE
 
 
-class StubLLMResponder:
-    def __init__(self, fail: bool = False) -> None:
-        self.fail = fail
+def parse_credits(text: str) -> tuple[int, int]:
+    """Extract (credits, retake_credits) from 'fee for 18 credits and 2 retake'."""
+    retake = re.search(r"(\d+)\s*retake", text)
+    numbers = [int(n) for n in re.findall(r"\d+", text)]
+    retake_n = int(retake.group(1)) if retake else 0
+    others = numbers.copy()
+    if retake:
+        others.remove(retake_n)
+    if not others:
+        raise InvalidRequest("How many credits?")
+    return others[0], retake_n
 
-    def explain(self, question: str, rule: Rule) -> str:
-        if self.fail:
-            raise ProviderError("stub provider unavailable")
-        return f"Based on '{rule.title}': {rule.text}"
+
+def tuition(credits: int, retake: int, rate: int, retake_multiplier: float, max_credits: int) -> int:
+    if not 1 <= credits <= max_credits:
+        raise InvalidRequest(f"Credits must be between 1 and {max_credits}.")
+    return int(credits * rate + retake * rate * retake_multiplier)
 
 
 # ---------------------------------------------------------------------------
@@ -258,12 +276,12 @@ class AssistantService:
         settings: Any,
         offices: Any,
         handbook: Any,
-        responder: Any,
+        responder: Responder,
     ) -> None:
         self.settings = settings
         self.offices = offices
         self.handbook = handbook
-        self.responder = responder
+        self.responder: Responder = responder
         self.fallback = TemplateResponder()
 
     def handle(self, msg: Message) -> Response:
@@ -283,6 +301,16 @@ class AssistantService:
         if intent is Intent.GREETING:
             return Response(
                 answer="Hello! I can help with offices, fees and rules.",
+                intent=intent,
+            )
+
+        if intent is Intent.HELP:
+            return Response(
+                answer=(
+                    "I can help you find campus offices, calculate tuition fees, "
+                    "and search academic rules. Try asking 'where is the training office?' "
+                    "or 'tuition for 18 credits'."
+                ),
                 intent=intent,
             )
 
