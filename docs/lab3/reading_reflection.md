@@ -1,0 +1,3 @@
+# Lab 3 — Reading Reflection
+
+The monolith violates Twelve-Factor III (Config) most: `RATE`, `RETAKE_RATE`, `MODEL`, `DEBUG`, and the API key are hard-coded in source. I fixed this by moving settings into environment variables and `.env`, validated by Pydantic `Settings` in `config.py`, with safe defaults and placeholders in `.env.example`. The monolith also violates XI (Logs) by using `print` and leaking the key; structured JSON logging to stderr with `repr=False` addresses that.

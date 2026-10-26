@@ -33,6 +33,7 @@ Undisclosed AI code generation is considered an academic integrity violation. Di
 | **26/10/2026** | Lý Tuấn Kiệt (PR #14) | Antigravity (Gemini 3.8 Flash) | Address PR review comments: document `InvalidRequest` contract & add edge-case tests | Updated `docs/architecture.md`, `src/assistant_core/tools.py` docstrings, and added edge-case unit tests in `tests/test_tools.py` | Ran `pytest` suite (106 passed, 4 skipped); `ruff check .` clean (0 errors) |
 | **26/10/2026** | Đặng Xuân Phát (Member 3) | Antigravity (Gemini 3.8 Flash) | Implement logging_setup.py and configure quality gates (pyproject.toml, requirements.txt) | Created logging_setup.py with JsonFormatter (structured logs to stderr, secret sanitization); pinned dependencies in requirements.txt; configured ruff rules in pyproject.toml; completed before/after maintainability worksheet | Ran pytest suite (106 passed, 4 skipped), ruff check . (clean), ruff check --select BLE . (clean), manual CLI test with stderr log redirect |
 
+| **26/10/2026** | Nguyễn Phúc Khánh | OpenCode | Add a help command to AssistantService with exact-match routing and tests | Implemented help handling in `service.py`, added `tests/test_help.py`, documented the review in `docs/lab3/ai_extension_review_khanhf-ng820.md` | Ran `pytest -q` and `ruff check .`; verified help and non-hijack cases manually |
 ---
 
 ## 3. Human Inspection Protocol

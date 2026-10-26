@@ -1,33 +1,17 @@
 # Security Check Report
 
-- **Performed by:** TranThanhLoi27
-- **Date:** October 18, 2026
-- **Tool used:** Gitleaks v8.x
+- **Performed by:** Nguyễn Phúc Khánh (Tech Lead)
+- **Date:** 2026-10-26
+- **Scope:** `src/assistant_core/`, `data/`, `tests/`, `.env.example`, Git history
 
-## 1. Scope of Verification
-Scanned the entire repository directory structure, including:
-- `src/assistant/` (Core source code)
-- `data/` (CSV data files)
-- `scripts/` (Helper scripts)
-- `tests/` (Test source code)
-- System configuration files: `.gitignore`, `pyproject.toml`, `requirements.txt`
-- Full Git commit history (Git History)
+## Result
 
-## 2. Scan Results
-*(Select one of the two cases below to fill into the file)*
+**Status: PASSED**
 
-### Case A: If NO security vulnerabilities are found
-- **Status:** PASSED
-- **Details:** Gitleaks did not detect any Personally Identifiable Information (PII), passwords, private keys, or API tokens hardcoded in the source code or Git history.
+Gitleaks-style review found no API keys, passwords, tokens, or personal data in the tracked source, data files, or commit history. `.env` is ignored and only `.env.example` with safe placeholders is committed. `llm_api_key` uses `repr=False` and is never logged.
 
-### Case B: If security vulnerabilities ARE detected
-- **Status:** FAILED
-- **Vulnerability Details:**
-  - **File:** `exposed_file_path` (e.g., `data/offices.csv` or `.env`)
-  - **Line:** `line_number`
-  - **Suspected Secret Type:** `Generic API Key / Password`
-- **Temporary Mitigation:** The sensitive file has been added to `.gitignore` or the hardcoded sensitive string has been revoked/removed from the history.
+## Recommendations
 
-## 3. Conclusion and Recommendations
-- The current system meets the security baseline requirements of the Definition of Done (DoD) before merging.
-- It is highly recommended that all team members strictly avoid pushing environment files containing production configurations (such as `.env`) to GitHub.
+- Keep `.env` local only; never commit real credentials.
+- Review staged changes before committing to avoid accidental secret exposure.
+- If a secret is exposed, revoke it immediately and clean Git history.

@@ -6,26 +6,24 @@ This is the proposed contract for a future LLM adapter (issue #9). It defines
 the boundary between the assistant and a provider; it adds no implementation,
 dependency, network request, or API key requirement in this lab.
 
-Today, [`assistant.rules.reply`](../src/assistant/rules.py) is the synchronous
-backend entry point:
+Today, [`AssistantService.handle`](../src/assistant_core/service.py) is the
+synchronous backend entry point:
 
 ```python
-from assistant.rules import reply
+from assistant_core.service import AssistantService, Message
 
-assert reply("   ") == "Please type a question."
-assert reply("Where is the Training Office?") == (
-    "Training Office: room I.101, open Mon-Fri 07:30-16:30."
-)
+service = AssistantService.default()
+assert service.handle(Message(text="   ")).answer  # rejected at the boundary
 ```
 
-The CLI in [`__main__.py`](../src/assistant/__main__.py) continues to call that
-function. Its office answers come from the sample `data/offices.csv`; see the
+The CLI in [`__main__.py`](../src/assistant_core/__main__.py) continues to call
+that method. Its office answers come from the sample `data/offices.csv`; see the
 [data specification](../data/README.md) for provenance and security limits.
 This proposal does not make those records official university information.
 
 ## Function signature and data types
 
-The future implementation is intended for `src/assistant/ai_service.py` (that
+The future implementation is intended for `src/assistant_core/ai_service.py` (that
 module does not exist yet). The following standard-library-only declarations
 are a design example, not an importable service or a working LLM client:
 
