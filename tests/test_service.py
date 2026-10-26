@@ -22,7 +22,6 @@ from assistant_core.__main__ import execute_query, main
 from assistant_core.responder import Responder, StubLLMResponder, TemplateResponder
 from assistant_core.service import (
     AssistantService,
-    DataError,
     Handbook,
     Intent,
     Message,

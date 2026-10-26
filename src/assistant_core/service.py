@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import Any
 
 from assistant_core.responder import Responder, StubLLMResponder, TemplateResponder
-
 from assistant_core.router import GREETINGS, route
 from assistant_core.tools import parse_credits, tuition
 
@@ -253,15 +252,6 @@ class AssistantService:
 
     def handle(self, msg: Message) -> Response:
         """Process incoming student message and return structured response."""
-        if msg.text.strip().lower().rstrip("?!.,") == "help":
-            return Response(
-                answer=(
-                    "I can help with office locations and hours, tuition calculations, "
-                    "and handbook rules. Try 'where is the library?' or 'tuition for 18 credits'."
-                ),
-                intent=Intent.GREETING,
-            )
-
         office_names = getattr(self.offices, "names", set())
         intent = route(msg.text, office_names)
 
