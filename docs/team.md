@@ -4,8 +4,8 @@
 
 - **Course:** CSC10014 - Computational Thinking
 - **Project:** Smart Virtual Assistant
-- **Repository:** assistant-team07
-- **Lab:** Lab 01 - Developer Environment & Reproducible Setup
+- **Repository:** assistant_core_lab
+- **Lab:** Lab 03 - Maintainable Python Service
 
 ## Team Members
 

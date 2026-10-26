@@ -16,9 +16,9 @@ responsible for checking updates, not the original provider of official data.
 | `offices.csv` | Team-maintained sample campus-office records committed to this repository. No external source or official verification is recorded for the current rows; names, rooms, and hours must be treated as demonstration data. | Trần Phúc Khánh (`TranPhucKhanhh`), Data & Security Developer; team leader reviews changes. | Update when a development issue changes the sample dataset. Before production use, verify every row against an authorized source; then review at least once per academic term and immediately after an office relocation or hours change. |
 | `README.md` | Team-authored specification and maintenance guidance based on the repository's CSV schema, backend loader, and team responsibilities. | Trần Phúc Khánh (`TranPhucKhanhh`), Data & Security Developer. | Review whenever a data file, schema, source, owner, or maintenance policy changes; also review once per academic term. |
 
-The backend reads `offices.csv` through `load_offices()` in
-[`src/assistant/rules.py`](../src/assistant/rules.py). This file is the source
-used by the starter application, but it is not evidence of real campus
+The backend reads `offices.csv` through `OfficeDirectory.from_csv()` in
+[`src/assistant_core/knowledge.py`](../src/assistant_core/knowledge.py). This file is the source
+used by the application, but it is not evidence of real campus
 locations or schedules. No external directory has been verified as part of
 this documentation change.
 

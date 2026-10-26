@@ -40,5 +40,5 @@ Team member information and responsibilities are recorded in `team.md`.
 
 - **Course:** CSC10014 - Computational Thinking
 - **Project:** Smart Virtual Assistant
-- **Lab:** Lab 01 - Developer Environment & Reproducible Setup
+- **Lab:** Lab 03 - Maintainable Python Service
 - **Institution:** University of Science, VNU-HCM
