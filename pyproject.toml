@@ -27,3 +27,4 @@ extend-exclude = ["lab03/monolith", "src/assistant-core"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "BLE"]
+

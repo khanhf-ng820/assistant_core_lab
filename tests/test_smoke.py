@@ -33,6 +33,8 @@ def test_office_lookup(service: AssistantService) -> None:
     assert response.intent is Intent.OFFICE
     assert "I.101" in response.answer
 
+def test_international_office_lookup(extra_offices):
+    assert "F.203" in reply("When does the International Office open?", offices=extra_offices)
 
 def test_library_lookup_is_case_insensitive(service: AssistantService) -> None:
     response = service.handle(Message(text="WHERE IS THE LIBRARY?"))

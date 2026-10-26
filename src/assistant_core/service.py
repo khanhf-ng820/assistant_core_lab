@@ -17,7 +17,18 @@ from typing import Any
 
 from assistant_core.responder import Responder, StubLLMResponder, TemplateResponder
 
+from assistant_core.router import GREETINGS, route
+from assistant_core.tools import parse_credits, tuition
+
 log = logging.getLogger("assistant_core")
+
+__all__ = [
+    "AssistantService",
+    "GREETINGS",
+    "route",
+    "parse_credits",
+    "tuition",
+]
 
 # ---------------------------------------------------------------------------
 # Contracts & Models (with self-contained fallbacks for unmerged modules)
