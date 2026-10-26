@@ -11,9 +11,7 @@ from assistant_core.exam_absence import (
 
 
 def test_exam_absence_answer():
-    result = answer_exam_absence(
-        "What should I do if I miss my final exam?"
-    )
+    result = answer_exam_absence("What should I do if I miss my final exam?")
 
     assert result is not None
     assert "3 working days" in result

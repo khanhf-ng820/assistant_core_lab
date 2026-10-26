@@ -1,4 +1,5 @@
 """A tiny rule-based responder. No AI yet — that comes in Week 4."""
+
 from __future__ import annotations
 
 import csv
@@ -39,9 +40,7 @@ def reply(message: str, offices: dict[str, dict[str, str]] | None = None) -> str
     generic_words = {"office", "center"}
     for name, row in offices.items():
         clean_name = name.removesuffix(" office").removesuffix(" center").strip()
-        if (clean_name and clean_name in text) or (
-            len(text) >= 3 and text not in generic_words and text in name
-        ):
+        if (clean_name and clean_name in text) or (len(text) >= 3 and text not in generic_words and text in name):
             return f"{row['name']}: room {row['room']}, open {row['hours']}."
 
     return "I don't know that yet. Try asking about an office, e.g. 'training office'."

@@ -1,6 +1,10 @@
 # Lab 3 — AI Extension Review
 
-## 1. Feature: Exam Absence Assistant
+This file collects the team's individual AI-extension reviews.
+
+---
+
+## Review 1 — Exam Absence Assistant (Nguyễn Minh Khang)
 
 **AI Tool:** ChatGPT (OpenAI)
 
@@ -10,42 +14,69 @@ The initial AI-generated implementation was created in `src/assistant_core/exam_
 
 The code was then manually reviewed and improved for reliability, correctness, and testability.
 
-## 2. Review of AI-Generated Code
+### Review of AI-Generated Code
 
 | # | What the AI generated | Problem found | What was changed | Why |
 |---|---|---|---|---|
-| 1 | `open("data/handbook.json")` | The relative path depends on the current working directory. | Replaced it with `pathlib.Path` using the Python module's location. | Allows the feature to work when launched from different directories. |
+| 1 | `open("data/handbook.json")` | The relative path depends on the current working directory. | Replaced it with `pathlib.Path` using the module's location. | Allows the feature to work when launched from different directories. |
 | 2 | `if "exam" not in message.lower(): return None` | Any exam-related question could trigger the absence response, even questions about exam schedules. | Added separate exam and absence keyword checks using `casefold()`. | Reduces incorrect intent detection and unrelated answers. |
 | 3 | Direct `json.load()` without error handling or validation. | Missing files, invalid JSON, and malformed records were not handled consistently. | Added `ExamAbsenceDataError`, specific exception handling, and data structure validation. | Produces predictable errors and improves reliability. |
 
-## 3. Human Verification
+### Human Verification
 
-Added the following tests:
-
-- `tests/test_exam_absence.py`: 10 unit tests.
-- `tests/test_exam_absence_integration.py`: 4 integration tests.
-
-Verification results:
-
+- Added `tests/test_exam_absence.py`: 10 unit tests.
+- Added `tests/test_exam_absence_integration.py`: 4 integration tests.
 - **14/14 tests passed.**
 - **Ruff: All checks passed.**
-- Confirmed that exam absence questions return the deadline of **3 working days** from handbook rule `H26-7.2`.
-- Confirmed that unrelated exam questions do not return the absence rule.
-- Confirmed that existing greeting and office lookup behavior remains functional in the starter responder.
+- Confirmed exam absence questions return the deadline of **3 working days** from handbook rule `H26-7.2`.
+- Confirmed unrelated exam questions do not return the absence rule.
+- Confirmed existing greeting and office lookup behavior remains functional.
 
-## 4. Review Checklist
+### Checklist
 
-- **Interfaces:** Integrated with the existing starter `reply()` function. Integration with the final `AssistantService` architecture is still pending.
-- **Dependencies:** No additional third-party dependencies introduced.
-- **Security:** No API keys or secrets added.
-- **Logging:** No user messages or confidential data logged.
-- **Tests:** Added meaningful unit and integration tests.
-- **Error handling:** Added explicit handling for missing or malformed knowledge data.
+- Interfaces: integrated with the starter `reply()` function; integration with the final `AssistantService` architecture is still pending.
+- Dependencies: no additional third-party dependencies.
+- Security: no API keys or secrets added.
+- Logging: no user messages or confidential data logged.
+- Tests: meaningful unit and integration tests added.
+- Error handling: explicit handling for missing or malformed knowledge data.
 
-## 5. Remaining Improvements
+### Remaining Improvements
 
 The final implementation should reuse the team's shared `Handbook` and `DataError` interfaces once their modules are integrated. The team should also connect the feature through the final `router.py` and `service.py` architecture rather than relying only on the starter `rules.py`.
 
-## 6. Conclusion
+---
 
-The AI-generated implementation provided a functional starting point but required human review to improve portability, intent detection, and error handling. Automated tests verified these improvements and helped prevent regressions in existing assistant functionality.
+## Review 2 — Help Command (Đặng Xuân Phát, MSSV: 25125062)
+
+**Role:** Member 3 — QA/QC, UI/UX (Logging & Quality Gate)
+
+**Feature Extended:** Comprehensive `help` command and guided capability discovery
+
+### Prompt Used
+
+```text
+Extend assistant_core with a 'help' command that informs students about the assistant's capabilities
+(locating offices, calculating tuition fees, searching academic rules). Please implement intent routing,
+service handling, and CLI integration.
+```
+
+### Manual Review & Refactoring
+
+| # | What the AI generated | Problem found | What was changed | Why |
+|---|---|---|---|---|
+| 1 | Hardcoded `if "help" in text: print(...)` directly inside `execute_query` in `__main__.py`. | Violates separation of concerns and bypasses the core domain service architecture. | Added `Intent.HELP = "help"` to `models.py` and `HELP_TRIGGERS` to `router.py`, handled in `AssistantService.handle()`. | Preserves clean layered architecture and type safety. |
+| 2 | Emitted raw user input via `logger.info(f"User asked for help: {text}")`. | Violates Twelve-Factor XI and student privacy. | Retained structured JSON logging via `extra={"intent": "help", ...}` without raw text. | Prevents PII leakage into logs. |
+| 3 | Single trivial test for `help` substring. | Fragile coverage; no punctuation, bilingual, or logging tests. | Created `tests/test_help.py` with 4 comprehensive tests. | Enforces quality gate standards. |
+
+### Quality & Security Checklist
+
+- Interfaces respected: returns standard `Response(answer=..., intent=Intent.HELP, sources=[], degraded=False)`.
+- New dependencies: none.
+- Secrets: none leaked.
+- Logging of user data: no raw student text.
+- Tests: 4 automated unit tests (100% pass rate).
+
+### Academic Integrity Disclosure
+
+Recorded in `docs/ai-use-log.md`.

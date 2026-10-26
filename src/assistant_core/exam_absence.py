@@ -3,11 +3,7 @@
 import json
 from pathlib import Path
 
-HANDBOOK_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "data"
-    / "handbook.json"
-)
+HANDBOOK_PATH = Path(__file__).resolve().parents[2] / "data" / "handbook.json"
 
 
 class ExamAbsenceDataError(Exception):
@@ -51,9 +47,7 @@ def answer_exam_absence(
         if not isinstance(rule, dict):
             raise ExamAbsenceDataError("Invalid handbook rule")
 
-        if not isinstance(rule.get("id"), str) or not isinstance(
-            rule.get("text"), str
-        ):
+        if not isinstance(rule.get("id"), str) or not isinstance(rule.get("text"), str):
             raise ExamAbsenceDataError("Missing or invalid rule fields")
 
         if rule["id"] == "H26-7.2":
