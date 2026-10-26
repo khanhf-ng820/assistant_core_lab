@@ -56,7 +56,9 @@ def test_route_help() -> None:
     assert route("tro giup", office_names) == Intent.HELP
     assert route("huong dan", office_names) == Intent.HELP
     assert route("support", office_names) == Intent.HELP
-    assert route("help me with tuition", office_names) == Intent.HELP
+    assert route("help me", office_names) == Intent.HELP
+    # Compound query with domain keywords should route to specific intent instead of being hijacked
+    assert route("help me calculate tuition for 18 credits", office_names) == Intent.FEE
 
 
 def test_service_handle_help() -> None:

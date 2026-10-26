@@ -29,6 +29,7 @@ HELP_TRIGGERS: frozenset[str] = frozenset(
         "tro giup",
         "huong dan",
         "support",
+        "help me",
     }
 )
 
@@ -58,7 +59,7 @@ def route(text: str, office_names: Iterable[str] | None = None) -> Intent:
     if normalized in GREETINGS:
         return Intent.GREETING
 
-    if normalized in HELP_TRIGGERS or normalized.startswith("help"):
+    if normalized in HELP_TRIGGERS:
         return Intent.HELP
 
     if "fee" in normalized or "tuition" in normalized:
