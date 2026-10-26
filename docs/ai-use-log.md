@@ -33,6 +33,7 @@ Undisclosed AI code generation is considered an academic integrity violation. Di
 
 
 
+| **26/10/2026** | Nguyễn Phúc Khánh (integration) | OpenCode | Integrate PRs #6/#7/#9/#14/#4 into `integrate/lab3-core`, rewrite `service.py` to use the modules, remove legacy `rules.py`, update docs, add `help` command and tests | Reviewed the full diff, ran `pytest -q` (152 passed, 4 skipped) and `ruff check .` (clean), verified CLI manually | Human author review pending |
 ---
 
 ## 3. Human Inspection Protocol

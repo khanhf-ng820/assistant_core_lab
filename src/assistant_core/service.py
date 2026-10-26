@@ -75,6 +75,15 @@ class AssistantService:
 
     def handle(self, msg: Message) -> Response:
         """Process incoming student message and return structured response."""
+        if msg.text.strip().lower().rstrip("?!.,") == "help":
+            return Response(
+                answer=(
+                    "I can help with office locations and hours, tuition calculations, "
+                    "and handbook rules. Try 'where is the library?' or 'tuition for 18 credits'."
+                ),
+                intent=Intent.GREETING,
+            )
+
         office_names = getattr(self.offices, "names", set())
         intent = route(msg.text, office_names)
 
