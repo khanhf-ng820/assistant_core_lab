@@ -1,6 +1,6 @@
 """Team API foundation — Lab 4.  Run:  uvicorn assistant_api.main:create_app --factory --reload
 
-GET /health and T1 chat are complete. Other owners implement T2–T4/H1 and Part F.
+T1, T3, T4 and mandatory Part F are implemented. T2 and H1 remain with their owners.
 
 Endpoints (v1): GET /health, POST /v1/chat, POST /v1/feedback, GET /v1/feedback (admin),
 GET /v1/weather, GET /v1/offices
@@ -9,6 +9,7 @@ GET /v1/weather, GET /v1/offices
 from __future__ import annotations
 
 import uuid
+from hmac import compare_digest
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -54,7 +55,11 @@ def create_app(
         return error(exc.status_code, str(exc.detail).lower().replace(" ", "_"), str(exc.detail))
 
     def require_admin(x_api_key: str | None = Header(default=None)) -> None:
-        if not settings.api_admin_key or x_api_key != settings.api_admin_key:
+        if (
+            not settings.api_admin_key
+            or not x_api_key
+            or not compare_digest(x_api_key.encode("utf-8"), settings.api_admin_key.encode("utf-8"))
+        ):
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing or invalid API key")
 
     @app.get("/health", tags=["ops"])
@@ -68,8 +73,9 @@ def create_app(
         responses={422: {"model": ErrorResponse}, 429: {"model": ErrorResponse}},
     )
     def chat(req: ChatRequest, request: Request) -> ChatResponse:
-        # Owner: Nguyễn Phúc Khánh (T1). Trần Phúc Khánh adds Part F enforcement
-        # using app.state.rate_limiter before the service call below.
+        client = request.client.host if request.client else "unknown"
+        if not app.state.rate_limiter.allow(client):
+            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many requests")
         resp = service.handle(Message(text=req.message, session_id=req.session_id))
         return ChatResponse(**resp.model_dump(), request_id=uuid.uuid4().hex[:12])
 
@@ -82,11 +88,15 @@ def create_app(
         #   3. return item
         raise NotImplementedError("T2")
 
-    @app.get("/v1/feedback", response_model=list[FeedbackOut], tags=["feedback"], dependencies=[Depends(require_admin)])
+    @app.get(
+        "/v1/feedback",
+        response_model=list[FeedbackOut],
+        tags=["feedback"],
+        dependencies=[Depends(require_admin)],
+        responses={401: {"model": ErrorResponse}},
+    )
     def list_feedback() -> list[FeedbackOut]:
-        # Owner: Trần Phúc Khánh.
-        # TODO T3 (1 line): return the list. The API-key check is already done by `require_admin` above.
-        raise NotImplementedError("T3")
+        return feedback_store
 
     @app.get("/v1/weather", response_model=Weather, tags=["external"], responses={503: {"model": ErrorResponse}})
     def campus_weather() -> Weather:
