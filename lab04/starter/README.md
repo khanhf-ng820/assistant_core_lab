@@ -1,52 +1,31 @@
-# Study Assistant API — Lab 4
+# Study Assistant — backend (Lab 4 reference)
 
-## Setup (from repository root)
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-python -m pip install -r lab04/starter/requirements.txt
-python -m pip install -e . -e ./lab04/starter
-cp lab04/starter/.env.example lab04/starter/.env
-cd lab04/starter
+## Setup
+```
+python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
+pip install -r requirements.txt && pip install -e .
+cp .env.example .env
+```
+## Run the API
+```
 uvicorn assistant_api.main:create_app --factory --reload
 ```
+Open http://127.0.0.1:8000/docs for the interactive OpenAPI documentation.
 
-Open http://127.0.0.1:8000/docs. Use a local API_ADMIN_KEY in .env; never commit it.
-The process environment overrides .env. Relative ASSISTANT_DATA_DIR paths are resolved
-against the repository root, including when launching from this directory.
-Both packages share the root assistant_core and root data; do not copy another core here.
-The API uses APISettings extending the existing root Settings without changing the CLI.
+## API contract (v1)
+| Method | Path | Body | Success | Errors |
+|---|---|---|---|---|
+| GET | `/health` | — | 200 `{"status":"ok","version":...}` | — |
+| POST | `/v1/chat` | `{"message": str 1–2000, "session_id": str}` | 200 `{answer, intent, sources[], degraded, request_id}` | 422 invalid, 429 rate limit |
+| POST | `/v1/feedback` | `{"request_id": str, "rating": -1/0/1, "comment"?: str ≤500}` | 201 feedback with `id`, `created_at` | 422 |
+| GET | `/v1/feedback` | header `X-API-Key` | 200 list | 401 |
+| GET | `/v1/weather` | — | 200 `{temperature_c, wind_kmh, description, observed_at, stale}` | 503 upstream down |
 
-## Foundation handoff
+All errors use one shape: `{"error": {"code": "...", "message": "..."}}`.
 
-Only /health and the existing request validation/admin checks work at this stage.
-T1-T4 remain TODOs and otherwise raise NotImplementedError. CI explicitly checks
-foundation tests only; it is not evidence that the full Lab 4 API or practice passes.
-The supplied endpoint tests are intact. Enable all tests and practice gates when implemented.
-Each app owns one feedback_store exposed as app.state.feedback_store; T2 and T3 use that same list.
-
-Owners: Lợi — T1 chat; Kiệt — T2 POST feedback; Trần Phúc Khánh — T3 admin GET;
-Khang — T4 weather; Phát — H1 offices; Nguyễn Phúc Khánh — foundation and integration.
-Limit edits to your route and tests; rebase before sequential merges. Every member still
-completes P1-P5 and T1-T4 on their own branch. Teammate approval is required before merge.
-
-## Checks
-
-From root: `python -m pytest -q` (core).
-From lab04/starter: `python -m pytest -q tests/test_foundation.py` (foundation).
-After T1-T4: `python -m pytest -q tests` (full starter; bonus remains skipped).
-From lab04/practice: `python -m pytest -q test_hello_api.py` (five warm-ups).
-Run each suite separately to avoid duplicate test module names.
-
-Use the starter pyproject explicitly for Lab 4 Ruff checks: root discovery intentionally
-excludes unfinished teaching projects. See CI for exact commands.
-After endpoints work, run `bash api-tests/curl_tests.sh` against the server and capture
-a successful POST /v1/chat in /docs for the PR. Weather may return 503 if upstream is down.
-
-## Contract
-
-Requests/responses are defined in schemas.py and ../worksheets/api_contract.md.
-HTTP errors use {"error":{"code":"...","message":"..."}}.
-Feedback is in memory and disappears at restart. Weather uses the supplied timeout,
-retry and stale-cache implementation; tests use MockTransport rather than the internet.
+## Tests
+```
+pytest -q                          # unit + API tests (external API mocked)
+bash api-tests/curl_tests.sh       # manual tests against a running server
+```
+Postman / Bruno: import `api-tests/study-assistant.postman_collection.json`.

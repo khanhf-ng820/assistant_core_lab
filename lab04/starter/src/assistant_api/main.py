@@ -7,32 +7,34 @@ Endpoints (v1): GET /health, POST /v1/chat, POST /v1/feedback, GET /v1/feedback 
 
 from __future__ import annotations
 
+import uuid
+from datetime import datetime, timezone
+
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from assistant_api.config import APISettings, load_api_settings, resolve_data_dir
+from assistant_api.ratelimit import RateLimiter
 from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, Weather
-from assistant_api.weather import WeatherClient
-from assistant_core import AssistantService
+from assistant_api.weather import ExternalServiceError, WeatherClient
+from assistant_core import AssistantService, Message, build_service
+from assistant_core.config import Settings, load_settings
 
 
 def create_app(
-    settings: APISettings | None = None, service: AssistantService | None = None, weather: WeatherClient | None = None
+    settings: Settings | None = None, service: AssistantService | None = None, weather: WeatherClient | None = None
 ) -> FastAPI:
-    settings = settings or load_api_settings()
-    service = service or AssistantService.default(settings=settings, data_dir=resolve_data_dir(settings))
+    settings = settings or load_settings()
+    service = service or build_service(settings)
     weather = weather or WeatherClient(
         settings.weather_url, settings.campus_lat, settings.campus_lon, timeout_s=settings.weather_timeout_s
     )
+    limiter = RateLimiter(settings.rate_limit_per_min)  # used only in the BONUS task
     feedback_store: list[FeedbackOut] = []  # Lab 5 replaces this with a database
 
     app = FastAPI(
         title="Study Assistant API", version="1.0.0", description="Backend of the CSC10014 Smart Virtual Assistant."
     )
-
-    app.state.feedback_store = feedback_store
 
     def error(code: int, key: str, message: str) -> JSONResponse:
         return JSONResponse(status_code=code, content={"error": {"code": key, "message": message}})
@@ -43,8 +45,8 @@ def create_app(
         field = ".".join(str(p) for p in first["loc"][1:]) or "body"
         return error(422, "invalid_request", f"{field}: {first['msg']}")
 
-    @app.exception_handler(StarletteHTTPException)
-    async def on_http(_: Request, exc: StarletteHTTPException):
+    @app.exception_handler(HTTPException)
+    async def on_http(_: Request, exc: HTTPException):
         return error(exc.status_code, str(exc.detail).lower().replace(" ", "_"), str(exc.detail))
 
     def require_admin(x_api_key: str | None = Header(default=None)) -> None:

@@ -1,14 +1,25 @@
-import pytest
-from assistant_api.config import REPO_ROOT, APISettings
+from pathlib import Path
 
-from assistant_core import AssistantService
+import pytest
+
+from assistant_core.config import Settings
+from assistant_core.knowledge import Handbook, OfficeDirectory
+from assistant_core.responder import StubLLMResponder
+from assistant_core.service import AssistantService
+
+DATA = Path(__file__).resolve().parents[1] / "data"
 
 
 @pytest.fixture
 def settings():
-    return APISettings(data_dir=REPO_ROOT / "data")
+    return Settings(data_dir=DATA)
 
 
 @pytest.fixture
 def service(settings):
-    return AssistantService.default(settings=settings)
+    return AssistantService(
+        settings,
+        OfficeDirectory.from_csv(DATA / "offices.csv"),
+        Handbook.from_json(DATA / "handbook.json"),
+        StubLLMResponder(),
+    )
