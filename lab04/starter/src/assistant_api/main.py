@@ -15,7 +15,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from assistant_api.ratelimit import RateLimiter
-from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, Weather
+from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, OfficeOut, Weather
 from assistant_api.weather import ExternalServiceError, WeatherClient
 from assistant_core import AssistantService, Message, build_service
 from assistant_core.config import Settings, load_settings
@@ -89,5 +89,16 @@ def create_app(
         #   If ExternalServiceError happens, raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE,
         #   "Weather service unavailable") from None
         raise NotImplementedError("T4")
+
+
+    @app.get(
+        "/v1/offices",
+        response_model=list[OfficeOut],
+        tags=["directory"],
+        summary="List campus offices",
+        description="Retrieve all campus offices and opening hours sorted alphabetically.",
+    )
+    def list_offices() -> list[dict]:
+        return [o.__dict__ for o in service.offices.all()]
 
     return app

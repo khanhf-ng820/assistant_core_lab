@@ -48,3 +48,8 @@ class ErrorBody(BaseModel):
 
 class ErrorResponse(BaseModel):
     error: ErrorBody
+
+class OfficeOut(BaseModel):
+    name: str = Field(description="Office display name", examples=["Library"])
+    room: str = Field(description="Room or building location", examples=["B.201"])
+    hours: str = Field(description="Operating hours", examples=["Mon-Sat 07:00-20:00"])

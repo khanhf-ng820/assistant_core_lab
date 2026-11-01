@@ -83,6 +83,10 @@ class OfficeDirectory:
         t = text.lower()
         return next((o for name, o in self._offices.items() if name in t), None)
 
+    def all(self) -> list[Office]:
+        """Return all offices sorted alphabetically by display name."""
+        return sorted(self._offices.values(), key=lambda office: office.name)
+
 
 @dataclass(frozen=True)
 class Rule:

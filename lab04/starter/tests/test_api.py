@@ -82,3 +82,26 @@ def test_weather_stale_cache_when_upstream_fails():
     w.cache_ttl_s = 0  # force a refresh on the second call
     assert not w.current().stale
     assert w.current().stale
+
+def test_offices_status_ok(client):
+    r = client.get("/v1/offices")
+    assert r.status_code == 200
+    assert isinstance(r.json(), list)
+
+
+def test_offices_sorted_and_contains_library(client):
+    r = client.get("/v1/offices")
+    assert r.status_code == 200
+    offices = r.json()
+    names = [office["name"] for office in offices]
+    assert "Library" in names
+    assert names == sorted(names)
+    assert all({"name", "room", "hours"}.issubset(office.keys()) for office in offices)
+
+def test_offices_openapi_schema(client):
+    r = client.get("/openapi.json")
+    assert r.status_code == 200
+    endpoint_doc = r.json()["paths"]["/v1/offices"]["get"]
+    assert endpoint_doc["tags"] == ["directory"]
+    assert endpoint_doc["summary"] == "List campus offices"
+    assert "alphabetically" in endpoint_doc["description"]
