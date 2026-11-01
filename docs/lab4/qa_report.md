@@ -168,6 +168,12 @@ Verified:
 
 A screenshot of the successful chat request was captured during manual testing.
 
+### Swagger Evidence
+
+![Successful POST /v1/chat - HTTP 200](screenshots/swagger_chat_200.jpg)
+
+The screenshot shows a successful POST /v1/chat request with HTTP 200 and the expected tuition response.
+
 ## 5. Cross-Review
 
 Reviewed PR #21 — T1 Chat API.
