@@ -93,8 +93,8 @@ cp .env.example .env  # only if you do not already have a local .env
 uvicorn assistant_api.main:create_app --factory --reload
 ```
 
-Open http://127.0.0.1:8000/docs. Only `/health` is implemented in this foundation.
-The other five operations are named TODOs and raise NotImplementedError for valid requests.
+Open http://127.0.0.1:8000/docs. `/health` and `POST /v1/chat` are implemented.
+The other four operations are named TODOs and raise NotImplementedError for valid requests.
 See [the team handoff](docs/lab4/foundation-handoff.md) for ownership and required acceptance tests.
 H1 offices and Part F rate limiting are mandatory for the completed team submission.
 

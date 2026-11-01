@@ -1,12 +1,14 @@
 """Team API foundation — Lab 4.  Run:  uvicorn assistant_api.main:create_app --factory --reload
 
-Only /health is complete. Owners implement T1–T4/H1 and add tests under tests/api/.
+GET /health and T1 chat are complete. Other owners implement T2–T4/H1 and Part F.
 
 Endpoints (v1): GET /health, POST /v1/chat, POST /v1/feedback, GET /v1/feedback (admin),
 GET /v1/weather, GET /v1/offices
 """
 
 from __future__ import annotations
+
+import uuid
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -18,6 +20,7 @@ from assistant_api.ratelimit import RateLimiter
 from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, Weather
 from assistant_api.weather import WeatherClient
 from assistant_core import AssistantService
+from assistant_core.models import Message
 
 
 def create_app(
@@ -65,12 +68,10 @@ def create_app(
         responses={422: {"model": ErrorResponse}, 429: {"model": ErrorResponse}},
     )
     def chat(req: ChatRequest, request: Request) -> ChatResponse:
-        # Owner: Lợi (T1). Trần Phúc Khánh adds mandatory Part F enforcement
-        # using app.state.rate_limiter before calling the service.
-        # TODO T1 (2 lines):
-        #   1. resp = service.handle(Message(text=req.message, session_id=req.session_id))
-        #   2. return ChatResponse(**resp.model_dump(), request_id=uuid.uuid4().hex[:12])
-        raise NotImplementedError("T1")
+        # Owner: Nguyễn Phúc Khánh (T1). Trần Phúc Khánh adds Part F enforcement
+        # using app.state.rate_limiter before the service call below.
+        resp = service.handle(Message(text=req.message, session_id=req.session_id))
+        return ChatResponse(**resp.model_dump(), request_id=uuid.uuid4().hex[:12])
 
     @app.post("/v1/feedback", response_model=FeedbackOut, status_code=201, tags=["feedback"])
     def add_feedback(fb: FeedbackIn) -> FeedbackOut:
@@ -89,7 +90,7 @@ def create_app(
 
     @app.get("/v1/weather", response_model=Weather, tags=["external"], responses={503: {"model": ErrorResponse}})
     def campus_weather() -> Weather:
-        # Owner: Khang.
+        # Owner: Trần Thành Lợi (T4).
         # TODO T4 (4 lines): call weather.current() inside try/except.
         #   If ExternalServiceError happens, raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE,
         #   "Weather service unavailable") from None

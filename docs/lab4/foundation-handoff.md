@@ -22,14 +22,20 @@ The supplied limiter uses a sliding 60-second window; independent app instances 
 
 ## Ownership and acceptance
 
+The latest user-provided assignment supersedes the earlier role split. Nguyễn Minh Khang
+(@KaKaAkagami) reviews T1. Only T1 implementation/tests are added after this clarification;
+other owners retain their endpoint and QA work. Rate limiting is mandatory under the LMS
+homework even though the role table calls it a bonus.
+
+
 | Owner | Operation | Required checks |
 |---|---|---|
-| Nguyễn Phúc Khánh | GET /health, integration, config, CI | 200 {status:ok,version:1.0.0}; offline startup |
-| Trần Thành Lợi | POST /v1/chat | 200 response fields + new 12-char ID; tuition 9,450,000 VND; empty input 422 |
+| Nguyễn Phúc Khánh | T1 POST /v1/chat, PR coordination, integration/tag | 200 response fields + fresh 12-char ID; tuition 9,450,000 VND; invalid input 422 |
 | Lý Tuấn Kiệt | POST /v1/feedback | 201; sequential ID and UTC timestamp; rating outside -1/0/1 rejected |
 | Trần Phúc Khánh | GET /v1/feedback + Part F | correct key 200; missing/wrong key 401; sixth chat at limit 5 returns 429 |
-| Nguyễn Minh Khang | GET /v1/weather + integrated QA | fake HTTP 200; failure/no cache 503; stale cache fallback; curl + Swagger |
-| Đặng Xuân Phát | GET /v1/offices + practice QA | 200; Library present; name/room/hours sorted by name; five warm-up tests |
+| Trần Thành Lợi | T4 GET /v1/weather | fake HTTP 200; failure/no cache 503; stale cache fallback |
+| Nguyễn Minh Khang | Part E QA/QC | integrated tests, curl, Swagger screenshot and demo |
+| Đặng Xuân Phát | GET /v1/offices + practice QA | 200; Library present; name/room/hours sorted by name; two H1 tests; Swagger clarity |
 
 Endpoint stubs and owner labels are in main.py. Limit edits to your route; coordinate
 T1/Part F and T2/T3 before merging. Rebase on the reviewed foundation; merge sequentially.
@@ -52,7 +58,7 @@ Do not import tests of unfinished routes merely to skip them. Activate the Week 
 rate-limit test when the feature lands: its starter "bonus" skip is not valid here.
 The existing four optional Week 3 benchmark skips remain unchanged.
 
-Foundation CI checks the root regression and foundation only. Final team acceptance
+Current CI checks the root regression, foundation and T1 chat only. Final team acceptance
 requires all six operations plus active 429 tests, H1 tests, offline weather tests,
 full CI, curl evidence and a successful Swagger chat screenshot. P1-P5 practice and
 H2 (five lines in each author's own words) remain PDF companion work. A second external
@@ -60,7 +66,7 @@ API does not replace mandatory rate limiting.
 
 ## PR and release sequence
 
-Foundation PR #21 closes #24 and requires @TranPhucKhanhh review.
+Root integration and T1 PR #21 closes #24 and requests @KaKaAkagami review.
 The obsolete personal candidate #22 / #23 is superseded; its branch is reference only.
 No separate full personal API PR is required by this team plan.
 Disclose AI use in each PR and docs/ai-use-log.md. Teammates add their feature PRs and
