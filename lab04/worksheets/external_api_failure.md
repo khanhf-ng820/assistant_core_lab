@@ -1,13 +1,15 @@
-# Lab 4 homework — design for an external service that goes down
+# External service failure worksheet — Open-Meteo
 
-Service chosen (weather / maps / news / other approved): ____________  Base URL: ____________
+Base URL: https://api.open-meteo.com/v1/forecast
 
-| Failure | How you simulate it | What your API returns | What the user sees |
+| Failure | Simulation | API behavior | User experience |
 |---|---|---|---|
-| timeout | transport raises ConnectTimeout | | |
-| 500 from upstream | MockTransport returns 500 | | |
-| malformed JSON | MockTransport returns `{}` | | |
-| rate limited (429) | MockTransport returns 429 | | |
+| Timeout | MockTransport raises ConnectTimeout | retry once; stale cache or 503 | marked old data or retry later |
+| HTTP 500 | MockTransport returns 500 | retry once; stale cache or 503 | same |
+| Malformed payload | MockTransport returns {} | retry once; stale cache or 503 | same |
+| HTTP 429 | MockTransport returns 429 | retry once; stale cache or 503 | same |
 
-Timeout value and why: ____  Retries and why: ____  Cache TTL and why: ____
-Tests added (file + names):
+Timeout: 3 seconds per HTTP operation; one retry limits upstream load. Cache TTL: 600 seconds.
+The supplied WeatherClient is unchanged. Tests: test_weather_ok,
+test_weather_down_returns_503 and test_weather_stale_cache_when_upstream_fails.
+Network access is unnecessary for automated tests. Live weather failure is a valid 503.

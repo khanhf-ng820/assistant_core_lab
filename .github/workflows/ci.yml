@@ -29,7 +29,7 @@ jobs:
       - name: Ruff format
         run: ruff format --check .
 
-  api-foundation:
+  lab04:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -43,10 +43,13 @@ jobs:
         run: |
           python -m pip install -r lab04/starter/requirements.txt
           python -m pip install -e . -e ./lab04/starter
-      - name: Foundation checks (T1-T4 and practice still pending)
+      - name: Practice P1-P5
+        working-directory: lab04/practice
+        run: python -m pytest -q test_hello_api.py
+      - name: Full API and starter tests
         working-directory: lab04/starter
-        run: python -m pytest -q tests/test_foundation.py
+        run: python -m pytest -q tests
       - name: API lint and format
         run: |
-          ruff check --config lab04/starter/pyproject.toml lab04/starter/src/assistant_api lab04/starter/tests
-          ruff format --check --config lab04/starter/pyproject.toml lab04/starter/src/assistant_api lab04/starter/tests
+          ruff check --config lab04/starter/pyproject.toml lab04/starter/src/assistant_api lab04/starter/tests lab04/practice
+          ruff format --check --config lab04/starter/pyproject.toml lab04/starter/src/assistant_api lab04/starter/tests lab04/practice

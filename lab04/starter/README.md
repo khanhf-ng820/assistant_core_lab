@@ -20,11 +20,9 @@ The API uses APISettings extending the existing root Settings without changing t
 
 ## Foundation handoff
 
-Only /health and the existing request validation/admin checks work at this stage.
-T1-T4 remain TODOs and otherwise raise NotImplementedError. CI explicitly checks
-foundation tests only; it is not evidence that the full Lab 4 API or practice passes.
-The supplied endpoint tests are intact. Enable all tests and practice gates when implemented.
-Each app owns one feedback_store exposed as app.state.feedback_store; T2 and T3 use that same list.
+This personal candidate completes P1-P5, T1-T4 and H1; bonus rate limiting is deferred.
+CI requires the full core, practice and API suites. Feedback remains isolated per app.
+The team should choose and review a shared implementation before merging this candidate.
 
 Owners: Lợi — T1 chat; Kiệt — T2 POST feedback; Trần Phúc Khánh — T3 admin GET;
 Khang — T4 weather; Phát — H1 offices; Nguyễn Phúc Khánh — foundation and integration.

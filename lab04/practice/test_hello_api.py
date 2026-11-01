@@ -1,6 +1,6 @@
 """Run: pytest -q test_hello_api.py   — all green means P1–P5 are done."""
-from fastapi.testclient import TestClient
 
+from fastapi.testclient import TestClient
 from hello_api import app
 
 client = TestClient(app)
@@ -16,7 +16,7 @@ def test_p2_hello():
 
 def test_p3_square():
     assert client.get("/square?n=7").json() == {"n": 7, "square": 49}
-    assert client.get("/square?n=abc").status_code == 422      # FastAPI checks the type for you
+    assert client.get("/square?n=abc").status_code == 422  # FastAPI checks the type for you
 
 
 def test_p4_add():

@@ -11,4 +11,5 @@
 Errors use {"error":{"code":"...","message":"..."}}; unknown routes return 404 not_found.
 Clients should display validation messages, request admin access for 401, and allow retry for 503.
 Changing required fields, field types, or response meanings incompatibly would require /v2.
-Rate limiting and /v1/offices are later additions, not completed foundation functionality.
+GET /v1/offices is public: 200 list of {name,room,hours}, sorted by name.
+Rate limiting remains an optional bonus and is not enabled.
