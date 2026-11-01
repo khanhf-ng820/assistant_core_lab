@@ -28,3 +28,25 @@ jobs:
         run: ruff check .
       - name: Ruff format
         run: ruff format --check .
+
+  api-foundation:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install core and API
+        run: |
+          python -m pip install -r lab04/starter/requirements.txt
+          python -m pip install -e . -e ./lab04/starter
+      - name: Foundation checks (T1-T4 and practice still pending)
+        working-directory: lab04/starter
+        run: python -m pytest -q tests/test_foundation.py
+      - name: API lint and format
+        run: |
+          ruff check --config lab04/starter/pyproject.toml lab04/starter/src/assistant_api lab04/starter/tests
+          ruff format --check --config lab04/starter/pyproject.toml lab04/starter/src/assistant_api lab04/starter/tests
