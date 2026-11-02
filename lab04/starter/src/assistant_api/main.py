@@ -35,6 +35,8 @@ def create_app(
     app = FastAPI(
         title="Study Assistant API", version="1.0.0", description="Backend of the CSC10014 Smart Virtual Assistant."
     )
+    # Expose feedback store on app state for testing and direct inspection
+    app.state.feedback_store = feedback_store
 
     def error(code: int, key: str, message: str) -> JSONResponse:
         return JSONResponse(status_code=code, content={"error": {"code": key, "message": message}})
@@ -72,11 +74,14 @@ def create_app(
 
     @app.post("/v1/feedback", response_model=FeedbackOut, status_code=201, tags=["feedback"])
     def add_feedback(fb: FeedbackIn) -> FeedbackOut:
-        # TODO T2 (3 lines):
-        #   1. item = FeedbackOut(**fb.model_dump(), id=len(feedback_store) + 1, created_at=datetime.now(timezone.utc))
-        #   2. add item to feedback_store
-        #   3. return item
-        raise NotImplementedError("T2")
+        # T2: Record user feedback with an auto-incremented ID and current UTC timestamp
+        item = FeedbackOut(
+            **fb.model_dump(),
+            id=len(feedback_store) + 1,
+            created_at=datetime.now(timezone.utc),
+        )
+        feedback_store.append(item)
+        return item
 
     @app.get("/v1/feedback", response_model=list[FeedbackOut], tags=["feedback"], dependencies=[Depends(require_admin)])
     def list_feedback() -> list[FeedbackOut]:

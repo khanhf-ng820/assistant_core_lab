@@ -18,7 +18,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from assistant_api.config import APISettings, load_api_settings, resolve_data_dir
 from assistant_api.ratelimit import RateLimiter
 from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, Weather
-from assistant_api.weather import WeatherClient
+from assistant_api.weather import ExternalServiceError, WeatherClient
 from assistant_core import AssistantService
 from assistant_core.models import Message
 
@@ -90,11 +90,11 @@ def create_app(
 
     @app.get("/v1/weather", response_model=Weather, tags=["external"], responses={503: {"model": ErrorResponse}})
     def campus_weather() -> Weather:
-        # Owner: Trần Thành Lợi (T4).
-        # TODO T4 (4 lines): call weather.current() inside try/except.
-        #   If ExternalServiceError happens, raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE,
-        #   "Weather service unavailable") from None
-        raise NotImplementedError("T4")
+        # Owner: Trần Thành Lợi (T4). Upstream failures become a clean 503.
+        try:
+            return weather.current()
+        except ExternalServiceError:
+            raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Weather service unavailable") from None
 
     @app.get("/v1/offices", tags=["offices"])
     def list_offices() -> list[dict[str, str]]:
