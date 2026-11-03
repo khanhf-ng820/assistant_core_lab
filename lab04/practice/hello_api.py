@@ -1,36 +1,31 @@
-"""Lab 4 warm-up: your first web API in a few lines.
 
-Run it:
-    uvicorn hello_api:app --reload
-Then open http://127.0.0.1:8000/docs in your browser.
+"""Lab 4 warm-up: your first web API in a few lines."""
 
-Exercises P1–P5 are in README.md. Each one adds a few lines at the marked place.
-"""
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI(title="Hello API")
 
 
-# P1 (already done): the simplest endpoint. Visit http://127.0.0.1:8000/
+# P1: Home
 @app.get("/")
 def home() -> dict:
     return {"message": "Hello, CSC10014!"}
 
 
-# P2: a path parameter. Visit http://127.0.0.1:8000/hello/Lan
+# P2: Path parameter
 @app.get("/hello/{name}")
 def hello(name: str) -> dict:
     return {"message": f"Hello, {name}!"}
 
 
-# P3: a query parameter. Visit http://127.0.0.1:8000/square?n=7
+# P3: Query parameter
 @app.get("/square")
 def square(n: int) -> dict:
     return {"n": n, "square": n * n}
 
 
-# P4: a request body. Send JSON {"a": 2, "b": 3} with POST.
+# P4: Request body
 class Numbers(BaseModel):
     a: float
     b: float
@@ -41,12 +36,16 @@ def add(nums: Numbers) -> dict:
     return {"sum": nums.a + nums.b}
 
 
-# P5: errors. Visit http://127.0.0.1:8000/courses/CSC10014 and /courses/XYZ
-COURSES = {"CSC10014": "Computational Thinking", "CSC10001": "Fundamentals of Programming"}
+# P5: HTTP errors
+COURSES = {
+    "CSC10014": "Computational Thinking",
+    "CSC10001": "Fundamentals of Programming",
+}
 
 
 @app.get("/courses/{code}")
 def course(code: str) -> dict:
     if code not in COURSES:
         raise HTTPException(status_code=404, detail="Course not found")
+
     return {"code": code, "name": COURSES[code]}
