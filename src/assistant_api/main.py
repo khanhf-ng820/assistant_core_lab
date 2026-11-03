@@ -17,7 +17,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from assistant_api.config import APISettings, load_api_settings, resolve_data_dir
 from assistant_api.ratelimit import RateLimiter
-from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, Weather
+from assistant_api.schemas import ChatRequest, ChatResponse, ErrorResponse, FeedbackIn, FeedbackOut, OfficeOut, Weather
 from assistant_api.weather import ExternalServiceError, WeatherClient
 from assistant_core import AssistantService
 from assistant_core.models import Message
@@ -96,9 +96,15 @@ def create_app(
         except ExternalServiceError:
             raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Weather service unavailable") from None
 
-    @app.get("/v1/offices", tags=["offices"])
+    @app.get(
+        "/v1/offices",
+        response_model=list[OfficeOut],
+        tags=["offices"],
+        summary="List campus offices",
+        description="Retrieve all campus offices and opening hours sorted alphabetically.",
+    )
     def list_offices() -> list[dict[str, str]]:
         # Owner: Phát (H1). Add all() to the directory actually used by the service.
-        raise NotImplementedError("H1")
+        return [o.__dict__ for o in service.offices.all()]
 
     return app
