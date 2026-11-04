@@ -1,6 +1,6 @@
 """Team API foundation — Lab 4.  Run:  uvicorn assistant_api.main:create_app --factory --reload
 
-GET /health and T1 chat are complete. Other owners implement T2–T4/H1 and Part F.
+GET /health, T1 chat, T4 weather, and H1 offices are complete. Other owners implement T2, T3 and Part F.
 
 Endpoints (v1): GET /health, POST /v1/chat, POST /v1/feedback, GET /v1/feedback (admin),
 GET /v1/weather, GET /v1/offices
@@ -104,7 +104,7 @@ def create_app(
         description="Retrieve all campus offices and opening hours sorted alphabetically.",
     )
     def list_offices() -> list[dict[str, str]]:
-        # Owner: Phát (H1). Add all() to the directory actually used by the service.
+        # Owner: Phát (H1). List all offices alphabetically sorted by display name.
         return [o.__dict__ for o in service.offices.all()]
 
     return app

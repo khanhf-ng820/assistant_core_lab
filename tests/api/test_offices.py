@@ -21,9 +21,9 @@ def test_offices_sorted_and_contains_library(client):
     response = client.get("/v1/offices")
     assert response.status_code == 200
     offices = response.json()
+    assert len(offices) == 4
     names = [office["name"] for office in offices]
-    assert "Library" in names
-    assert names == sorted(names)
+    assert names == ["IT Helpdesk", "Library", "Student Affairs", "Training Office"]
     assert all({"name", "room", "hours"}.issubset(office.keys()) for office in offices)
 
 

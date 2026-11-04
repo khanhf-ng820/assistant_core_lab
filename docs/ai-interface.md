@@ -58,7 +58,8 @@ class AnswerProvider(Protocol):
         *,
         sources: tuple[Source, ...],
         timeout_seconds: float = 10.0,
-    ) -> AIAnswer: ...
+    ) -> AIAnswer:
+        ...
 ```
 
 `generate_answer` is synchronous to match the current backend. The adapter
