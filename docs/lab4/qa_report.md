@@ -5,7 +5,8 @@
 **Student ID:** 25125018  
 **GitHub:** @KaKaAkagami  
 **Role:** Part E — QA/QC  
-**Date:** 2026-11-01
+**Initial QA:** 2026-11-01
+**Final re-check:** 2026-11-06
 
 ## 1. Scope
 
@@ -65,6 +66,31 @@ python -m ruff check .
 ```
 
 Result: **All checks passed**
+
+### Final Integration Re-check (2026-11-06)
+
+Re-checked at commit `f1cc905` after T3, Part F, T4 and H1 merged.
+
+Commands:
+
+```bash
+.venv/bin/python -m pytest -q
+.venv/bin/ruff check .
+.venv/bin/ruff format --check .
+.venv/bin/python scripts/check_week3_tests.py
+```
+
+Results:
+
+- Root suite: **218 passed, 4 skipped, 0 failed**
+- Ruff lint and format: **clean**
+- Week 3 tests: **14/14 unchanged**
+- Warm-up: **5 passed**
+- Root curl smoke: five working endpoints passed; T2 omitted
+  ([transcript](curl_transcript.md))
+
+The green suite does not include a successful `POST /v1/feedback` test, so it does not
+prove that T2 works.
 
 ## 3. Manual API Testing
 
@@ -199,17 +225,21 @@ The following requirements must be validated against the final integrated API:
 
 | Feature | Required Check | Status |
 |---|---|---|
-| T2 Feedback POST | HTTP 201, sequential ID, UTC timestamp | PENDING |
-| T3 Admin Feedback | Authorized access with valid key | PENDING |
-| Part F Rate Limiting | HTTP 429 after exceeding request limit | PENDING |
-| T4 Weather API | HTTP 200, fallback, HTTP 503 | PENDING |
-| H1 Offices API | HTTP 200, Library present, sorted offices | PENDING |
-| Full Team Integration | Complete test suite and CI | PENDING |
+| T2 Feedback POST | HTTP 201, sequential ID, UTC timestamp | **FAIL** — valid POST returns HTTP 500; root handler is still a TODO |
+| T3 Admin Feedback | Authorized access with valid key | PASS |
+| Part F Rate Limiting | HTTP 429 after exceeding request limit | PASS |
+| T4 Weather API | HTTP 200, fallback, HTTP 503 | PASS |
+| H1 Offices API | HTTP 200, Library present, sorted offices | PASS |
+| Full Team Integration | Complete test suite and CI | **PARTIAL** — full root suite is green; T2 success path is not covered |
 
-The current PASS results apply to commit `f2ea073` only. They do not establish that the final integrated Lab 4 application passes all required checks.
+The earlier PASS results applied to commit `f2ea073` only. The 2026-11-06 re-check
+extends the PASS results to `f1cc905` for T3, Part F, T4 and H1, but T2 still fails.
 
 ## 7. Conclusion
 
-The API foundation and T1 Chat API passed the initial automated and manual QA/QC checks.
+The API foundation, T1 Chat API, T3 admin feedback, Part F rate limiting, T4 weather and
+H1 offices passed automated and live checks at `f1cc905`.
 
-No failures were observed in the tested T1 branch. Final acceptance remains pending until all team endpoints and mandatory rate limiting are integrated and tested.
+T2 `POST /v1/feedback` remains unimplemented in the root API: valid requests return
+HTTP 500, so the final integrated submission is **not yet complete**. The `v0.4-api` tag
+must wait for T2 and the final evidence refresh.

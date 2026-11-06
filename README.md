@@ -93,10 +93,11 @@ cp .env.example .env  # only if you do not already have a local .env
 uvicorn assistant_api.main:create_app --factory --reload
 ```
 
-Open http://127.0.0.1:8000/docs. `/health` and `POST /v1/chat` are implemented.
-The other four operations are named TODOs and raise NotImplementedError for valid requests.
+Open http://127.0.0.1:8000/docs. `/health`, `POST /v1/chat`, `GET /v1/feedback`,
+`GET /v1/weather`, and `GET /v1/offices` are implemented. `POST /v1/feedback` (T2)
+remains a named TODO and returns 500 for valid requests until its owner lands it.
 See [the team handoff](docs/lab4/foundation-handoff.md) for ownership and required acceptance tests.
-H1 offices and Part F rate limiting are mandatory for the completed team submission.
+H1 offices and Part F rate limiting are implemented.
 
 Use a local API_ADMIN_KEY; never commit `.env`. Shell variables override dotenv settings.
 Default/relative ASSISTANT_DATA_DIR paths resolve against the repository root;
@@ -115,5 +116,9 @@ ruff check .
 ruff format --check .
 ```
 
+With the API server running locally, `bash scripts/lab04_curl_smoke.sh` exercises
+the five implemented endpoints; it intentionally omits T2 until that handler lands.
+See [the curl transcript](docs/lab4/curl_transcript.md) for a recorded run.
+
 CI covers Python 3.10/3.12 and automatically collects new tests in tests/api/.
-A green foundation build does not mean all six endpoints or rate limiting are complete.
+A green foundation build does not mean all six endpoints are complete.
