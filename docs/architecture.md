@@ -21,6 +21,12 @@ In accordance with Single Responsibility (cohesion) and Loose Coupling, each mod
 | `logging_setup.py` | Configures structured JSON logging with security guards to prevent credential and message leakage. |
 | `__main__.py` | Provides the Command-Line Interface supporting both argument-based queries and interactive REPL sessions. |
 
+### Lab 5 persistence scaffolding
+
+`src/assistant_api/db.py` defines the SQLModel tables `ChatSession`, `Interaction`, and `Feedback`, plus a `Repository` for parameterised access. The SQL schema lives in `sql/migrations/`, and `scripts/migrate.py` / `scripts/seed.py` operate on a standalone SQLite file.
+
+This layer is **not wired into the API yet**: `assistant_api/main.py` still uses the in-memory feedback store, and `Repository.add_feedback` (R1) / `list_feedback` (R2) remain TODOs. DB-backed chat recording and `GET /v1/stats/intents` are therefore not active.
+
 ---
 
 ## 2. The Service Interface Contract

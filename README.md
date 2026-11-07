@@ -76,7 +76,10 @@ Lab 2 benchmark artifacts (`eval/cases.csv`, `eval/run.py`) are not shipped with
 - `docs/`: Project documentation, reports, and worksheets.
 - `lab03/`: Lab 3 monolith (intentionally non-compliant) and worksheets.
 - `src/assistant_core/`: Core application package.
-- `tests/`: Automated unit tests.
+- `src/assistant_api/`: FastAPI application and Lab 5 persistence layer.
+- `sql/`, `scripts/`: Lab 5 migrations and migrate/seed helpers.
+- `api-tests/`: Manual curl and Postman checks.
+- `tests/`: Automated tests.
 
 ## Troubleshooting
 
@@ -122,3 +125,23 @@ See [the curl transcript](docs/lab4/curl_transcript.md) for a recorded run.
 
 CI covers Python 3.10/3.12 and automatically collects new tests in tests/api/.
 A green foundation build does not mean all six endpoints are complete.
+
+## Lab 5 — persistence (scaffolding)
+
+The Lab 5 database layer is included but not wired into the API yet:
+
+- `src/assistant_api/db.py` — SQLModel tables (`ChatSession`, `Interaction`, `Feedback`) and `Repository`.
+- `sql/migrations/` — schema migrations applied in order by `scripts/migrate.py`.
+- `scripts/seed.py` — synthetic interactions/feedback only (no real student data).
+- `api-tests/` — manual curl and Postman checks for the Lab 5 contract.
+
+```bash
+python scripts/migrate.py assistant.db
+python scripts/seed.py assistant.db 300   # requires R1 to be completed
+sqlite3 assistant.db < sql/my_queries.sql
+```
+
+`Repository.add_feedback` (R1) and `list_feedback` (R2) remain TODOs, so the
+root API keeps its in-memory feedback store and the known `POST /v1/feedback`
+500 behavior. `/v1/chat` does not record interactions yet, and there is no
+`GET /v1/stats/intents` endpoint in the root app.
