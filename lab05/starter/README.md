@@ -1,6 +1,11 @@
 # Study Assistant — backend (Lab 5 reference)
 
 ## Setup
+> **Python version:** Python 3.10+ is supported. On Python 3.14, `requirements.txt`
+> selects `pydantic 2.12.5` and `SQLModel 0.0.48`; Python 3.10–3.13 keeps the
+> original `pydantic 2.9.2` / `SQLModel 0.0.22` pins. If `.venv` already exists from
+> a different interpreter, remove it first (`rm -rf .venv`) so the environment is clean.
+
 ```
 python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -r requirements.txt && pip install -e .
