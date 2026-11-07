@@ -102,7 +102,7 @@ class Repository:
         with Session(self.engine) as db:
             exists = db.exec(select(Interaction).where(Interaction.request_id == request_id)).first()
             if exists is None:
-                return None          # the API turns this into 404
+                return None  # the API turns this into 404
             # TODO R1 (4 lines) — follow record_interaction above:
             #   fb = Feedback(request_id=request_id, rating=rating, comment=comment)
             #   db.add(fb); db.commit(); db.refresh(fb)   # refresh loads the new id from the database
@@ -110,7 +110,7 @@ class Repository:
             raise NotImplementedError("R1")
 
     def list_feedback(self, limit: int = 100) -> list[Feedback]:
-        with Session(self.engine) as db:
+        with Session(self.engine) as db:  # noqa: F841
             # TODO R2 (1 line): newest first, at most `limit` rows. SQL would be:
             #   SELECT * FROM feedback ORDER BY created_at DESC LIMIT ?
             # In SQLModel: select(Feedback).order_by(Feedback.created_at.desc()).limit(limit)
