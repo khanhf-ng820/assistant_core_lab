@@ -1,7 +1,6 @@
 
 """Verify that Lab 5 interaction data survives reopening SQLite."""
 
-import pytest
 from sqlmodel import Session, select
 
 from assistant_api.db import (
@@ -58,10 +57,6 @@ def test_interaction_survives_database_reopen(tmp_path):
     engine2.dispose()
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="Waiting for R1 add_feedback integration",
-)
 def test_feedback_survives_database_reopen(tmp_path):
     db_path = tmp_path / "feedback_restart.db"
     database_url = f"sqlite:///{db_path}"
