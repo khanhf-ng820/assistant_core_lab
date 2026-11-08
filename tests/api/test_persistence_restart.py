@@ -1,10 +1,12 @@
 
 """Verify that Lab 5 interaction data survives reopening SQLite."""
 
+import pytest
 from sqlmodel import Session, select
 
 from assistant_api.db import (
     ChatSession,
+    Feedback,
     Interaction,
     Repository,
     hash_session,
@@ -52,5 +54,51 @@ def test_interaction_survives_database_reopen(tmp_path):
         "qa-student-01", session_salt
     )
     assert sessions[0].id != "qa-student-01"
+
+    engine2.dispose()
+
+
+@pytest.mark.xfail(
+    strict=True,
+    reason="Waiting for R1 add_feedback integration",
+)
+def test_feedback_survives_database_reopen(tmp_path):
+    db_path = tmp_path / "feedback_restart.db"
+    database_url = f"sqlite:///{db_path}"
+
+    engine1 = make_engine(database_url)
+    init_db(engine1)
+
+    repo1 = Repository(engine1, "qa-test-salt")
+    repo1.record_interaction(
+        raw_session="qa-student-02",
+        request_id="qa-feedback-001",
+        intent="fee",
+        topic=None,
+        resolved=True,
+        degraded=False,
+        latency_ms=10.0,
+    )
+
+    feedback = repo1.add_feedback(
+        "qa-feedback-001", -1, "Incorrect answer"
+    )
+
+    assert feedback is not None
+    assert feedback.id is not None
+
+    engine1.dispose()
+
+    engine2 = make_engine(database_url)
+
+    with Session(engine2) as db:
+        stored = db.exec(
+            select(Feedback).where(
+                Feedback.request_id == "qa-feedback-001"
+            )
+        ).one()
+
+    assert stored.rating == -1
+    assert stored.comment == "Incorrect answer"
 
     engine2.dispose()
