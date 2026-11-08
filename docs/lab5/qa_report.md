@@ -1,10 +1,10 @@
 
 # Lab 5 — Persistence Verification Report
 
-**Student:** Nguyen Minh Khang  
-**Student ID:** 25125018  
-**GitHub:** @KaKaAkagami  
-**Role:** QA/QC  
+**Student:** Nguyen Minh Khang
+**Student ID:** 25125018
+**GitHub:** @KaKaAkagami
+**Role:** QA/QC
 **Branch:** test/persistence-verification
 
 ## 1. Objective
