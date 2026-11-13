@@ -1,0 +1,50 @@
+.F                                                                       [100%]
+================================== FAILURES ===================================
+___________________ test_feedback_survives_database_reopen ____________________
+
+tmp_path = WindowsPath('C:/Users/MSI Pro/AppData/Local/Temp/pytest-of-Anastasia/pytest-22/test_feedback_survives_databas0')
+
+    def test_feedback_survives_database_reopen(tmp_path):
+        db_path = tmp_path / "feedback_restart.db"
+        database_url = f"sqlite:///{db_path}"
+
+        engine1 = make_engine(database_url)
+        init_db(engine1)
+
+        repo1 = Repository(engine1, "qa-test-salt")
+        repo1.record_interaction(
+            raw_session="qa-student-02",
+            request_id="qa-feedback-001",
+            intent="fee",
+            topic=None,
+            resolved=True,
+            degraded=False,
+            latency_ms=10.0,
+        )
+
+>       feedback = repo1.add_feedback(
+            "qa-feedback-001", -1, "Incorrect answer"
+        )
+
+tests\api\test_persistence_restart.py:78:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <assistant_api.db.Repository object at 0x000002D1DF213750>
+request_id = 'qa-feedback-001', rating = -1, comment = 'Incorrect answer'
+
+    def add_feedback(self, request_id: str, rating: int, comment: str | None) -> Feedback | None:
+        with Session(self.engine) as db:
+            exists = db.exec(select(Interaction).where(Interaction.request_id == request_id)).first()
+            if exists is None:
+                return None  # the API turns this into 404
+            # TODO R1 (4 lines) � follow record_interaction above:
+            #   fb = Feedback(request_id=request_id, rating=rating, comment=comment)
+            #   db.add(fb); db.commit(); db.refresh(fb)   # refresh loads the new id from the database
+            #   return fb
+>           raise NotImplementedError("R1")
+E           NotImplementedError: R1
+
+src\assistant_api\db.py:110: NotImplementedError
+=========================== short test summary info ===========================
+FAILED tests/api/test_persistence_restart.py::test_feedback_survives_database_reopen
+1 failed, 1 passed in 0.71s
