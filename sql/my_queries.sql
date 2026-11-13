@@ -7,6 +7,10 @@
 
 -- H2 (Dang Xuan Phat - 25125062): Backup/degraded path share, latency impact, unresolved rate, and negative feedback across intents & handbook topics
 -- Question: What share of answers used the degraded/backup path overall and per (intent, topic), and how does degraded execution correlate with latency and thumbs-down feedback?
+-- Quick CLI execution:
+--   python3 -c "import sqlite3; con = sqlite3.connect('assistant.db'); print(con.execute(open('sql/my_queries.sql', encoding='utf-8').read()).fetchall())"
+-- Or via sqlite3 CLI:
+--   sqlite3 -header -column assistant.db < sql/my_queries.sql
 WITH fb_summary AS (
     SELECT
         request_id,
