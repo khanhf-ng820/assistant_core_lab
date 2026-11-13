@@ -1,9 +1,60 @@
 -- Lab 5 Part F: write your queries for the assistant database here.
+-- Author: Lý Tuấn Kiệt (MSSV: 25125022, @kiethm07) - Developer
+-- Reviewer: Nguyễn Minh Khang (MSSV: 25125018, @nmkhang_student) - QA/QC
+
 -- Q1 requests per intent
+SELECT
+    intent,
+    COUNT(*) AS total_requests
+FROM interaction
+GROUP BY intent
+ORDER BY total_requests DESC, intent ASC;
+
+-- Results on seeded assistant.db (300 interactions):
+-- intent   | total_requests
+-- ---------+---------------
+-- rule     | 140
+-- fee      | 61
+-- office   | 47
+-- greeting | 26
+-- unknown  | 26
 
 -- Q2 average latency per intent
+SELECT
+    intent,
+    ROUND(AVG(latency_ms), 2) AS avg_latency_ms
+FROM interaction
+GROUP BY intent
+ORDER BY avg_latency_ms DESC, intent ASC;
+
+-- Results on seeded assistant.db (300 interactions):
+-- intent   | avg_latency_ms
+-- ---------+---------------
+-- rule     | 76.18
+-- unknown  | 8.06
+-- fee      | 5.07
+-- office   | 3.4
+-- greeting | 2.4
 
 -- Q3 topics with the most thumbs-down (JOIN feedback with interaction)
+SELECT
+    i.topic,
+    COUNT(*) AS thumbs_down_count
+FROM feedback f
+JOIN interaction i ON f.request_id = i.request_id
+WHERE f.rating = -1
+  AND i.topic IS NOT NULL
+GROUP BY i.topic
+ORDER BY thumbs_down_count DESC, i.topic ASC;
+
+-- Results on seeded assistant.db (96 feedback entries, 35 thumbs-down across all requests):
+-- topic   | thumbs_down_count
+-- --------+------------------
+-- H26-4.2 | 8
+-- H26-5.3 | 8
+-- H26-7.2 | 2
+-- Note: Excludes interactions where topic IS NULL (e.g., greeting, fee, office, unknown).
+-- If untracked/NULL topics are included as '(none)', COALESCE(i.topic, '(none)') accounts for 17 thumbs-down.
 
 -- H2 (Dang Xuan Phat - 25125062): Backup/degraded path share, latency impact, unresolved rate, and negative feedback across intents & handbook topics
 -- Question: What share of answers used the degraded/backup path overall and per (intent, topic), and how does degraded execution correlate with latency and thumbs-down feedback?
