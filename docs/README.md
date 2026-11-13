@@ -8,6 +8,7 @@ This directory contains supporting documentation for the CSC10014 Smart Virtual 
 |---|---|
 | `README.md` | Overview of project documentation and contribution guidelines. |
 | `team.md` | Team members, assigned roles, and responsibilities. |
+| [`lab5/data_model.md`](lab5/data_model.md) | Lab 5 H3 schema critique, PII/retention decisions, ER model and security review. |
 | [`lab4/admin-feedback-security.md`](lab4/admin-feedback-security.md) | T3 authorization, mandatory chat rate limiting, tests, and integration handoff. |
 | [`ai-interface.md`](ai-interface.md) | Proposed future LLM interface: inputs, outputs, errors, and local fallback; no LLM calls in the current lab. |
 | [`ui-sources.md`](ui-sources.md) | UI design specification and mockups for source citations under assistant answers. |
