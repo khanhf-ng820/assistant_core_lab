@@ -15,9 +15,9 @@ SELECT title, credits FROM courses WHERE credits = 4 ORDER BY title;
 -- Q7  (how many students?)
 SELECT COUNT(id) as number_of_students FROM students;
 -- Q8  (number of students per program, by program)
-SELECT program, COUNT(id) FROM students GROUP BY program;
+SELECT program, COUNT(id) FROM students GROUP BY program ORDER BY program;
 -- Q9  (average grade in CSC10004, rounded to 2 decimals)
-SELECT AVG(grade) FROM enrollments WHERE course_code = 'CSC10004';
+SELECT ROUND(AVG(grade), 2) FROM enrollments WHERE course_code = 'CSC10004';
 -- Q10 (student_id and course_code of enrollments without a grade, by student_id)
 SELECT student_id, course_code FROM enrollments WHERE grade IS NULL ORDER BY student_id;
 -- Q11 (name and grade of graded students in CSC10014, by name)
@@ -33,10 +33,11 @@ JOIN enrollments e ON c.code = e.course_code
 GROUP BY c.code
 ORDER BY COUNT(*) DESC, c.title;
 -- Q13 (names of students with a grade below 5, by name)
-SELECT s.name
+SELECT DISTINCT s.name
 FROM students s
 JOIN enrollments e ON s.id = e.student_id
-WHERE e.grade < 5;
+WHERE e.grade < 5
+ORDER BY s.name;
 -- Q14 (each student's name and total credits enrolled, most first, then by name)
 SELECT s.name, SUM(c.credits) as total_credits
 FROM enrollments e

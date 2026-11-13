@@ -12,6 +12,7 @@ This directory contains supporting documentation for the CSC10014 Smart Virtual 
 | [`ai-interface.md`](ai-interface.md) | Proposed future LLM interface: inputs, outputs, errors, and local fallback; no LLM calls in the current lab. |
 | [`ui-sources.md`](ui-sources.md) | UI design specification and mockups for source citations under assistant answers. |
 | [`feedback_guide_presentation.md`](feedback_guide_presentation.md) | Task T2 guide: `POST /v1/feedback` implementation, API contract, test suite, and presentation script. |
+| [`lab5/h1_audit_and_scores.md`](lab5/h1_audit_and_scores.md) | Lab 5 H1 15/15 audit (strictness fixes), H2 analytics summary, and team QA readiness scorecard. |
 
 
 ## Planned Documentation
