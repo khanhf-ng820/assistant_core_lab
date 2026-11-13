@@ -1,4 +1,3 @@
-
 """Verify that Lab 5 interaction data survives reopening SQLite."""
 
 from sqlmodel import Session, select
@@ -49,9 +48,7 @@ def test_interaction_survives_database_reopen(tmp_path):
     assert interactions[0].latency_ms == 12.5
 
     assert len(sessions) == 1
-    assert sessions[0].id == hash_session(
-        "qa-student-01", session_salt
-    )
+    assert sessions[0].id == hash_session("qa-student-01", session_salt)
     assert sessions[0].id != "qa-student-01"
 
     engine2.dispose()
@@ -75,9 +72,7 @@ def test_feedback_survives_database_reopen(tmp_path):
         latency_ms=10.0,
     )
 
-    feedback = repo1.add_feedback(
-        "qa-feedback-001", -1, "Incorrect answer"
-    )
+    feedback = repo1.add_feedback("qa-feedback-001", -1, "Incorrect answer")
 
     assert feedback is not None
     assert feedback.id is not None
@@ -87,11 +82,7 @@ def test_feedback_survives_database_reopen(tmp_path):
     engine2 = make_engine(database_url)
 
     with Session(engine2) as db:
-        stored = db.exec(
-            select(Feedback).where(
-                Feedback.request_id == "qa-feedback-001"
-            )
-        ).one()
+        stored = db.exec(select(Feedback).where(Feedback.request_id == "qa-feedback-001")).one()
 
     assert stored.rating == -1
     assert stored.comment == "Incorrect answer"
