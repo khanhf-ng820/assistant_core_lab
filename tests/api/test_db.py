@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 from sqlmodel import Session, select
 
 from assistant_api.db import ChatSession, Feedback, Interaction, Repository, hash_session, init_db, make_engine
@@ -51,3 +53,44 @@ def test_feedback_comment_and_multiple_entries():
     with Session(engine) as db:
         feedbacks = db.exec(select(Feedback).where(Feedback.request_id == "req-123")).all()
         assert len(feedbacks) == 2
+
+
+BASE_TIME = datetime(2026, 11, 1, 9, 0, tzinfo=timezone.utc)
+
+
+def _seed_feedback(repo, engine, request_id: str, rating: int, minutes: int) -> None:
+    repo.record_interaction("student-1", request_id, "fee", None, True, False, 1.0)
+    with Session(engine) as db:
+        db.add(Feedback(request_id=request_id, rating=rating, created_at=BASE_TIME + timedelta(minutes=minutes)))
+        db.commit()
+
+
+def test_list_feedback_returns_newest_first():
+    repo, engine = make_repo()
+    _seed_feedback(repo, engine, "r30", 1, minutes=30)
+    _seed_feedback(repo, engine, "r0", 1, minutes=0)
+    _seed_feedback(repo, engine, "r60", -1, minutes=60)
+
+    listed = repo.list_feedback()
+    assert [f.request_id for f in listed] == ["r60", "r30", "r0"]
+
+
+def test_list_feedback_respects_limit():
+    repo, engine = make_repo()
+    for i in range(5):
+        _seed_feedback(repo, engine, f"r{i}", -1, minutes=i)
+
+    assert [f.request_id for f in repo.list_feedback(limit=2)] == ["r4", "r3"]
+
+
+def test_list_feedback_default_limit_keeps_all_when_few_rows():
+    repo, engine = make_repo()
+    _seed_feedback(repo, engine, "only", 0, minutes=0)
+
+    listed = repo.list_feedback()
+    assert [f.request_id for f in listed] == ["only"]
+
+
+def test_list_feedback_empty_database():
+    repo, _ = make_repo()
+    assert repo.list_feedback() == []

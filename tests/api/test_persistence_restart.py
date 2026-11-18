@@ -88,3 +88,41 @@ def test_feedback_survives_database_reopen(tmp_path):
     assert stored.comment == "Incorrect answer"
 
     engine2.dispose()
+
+
+def test_api_feedback_persists_across_server_restart(tmp_path):
+    from fastapi.testclient import TestClient
+
+    from assistant_api.config import APISettings
+    from assistant_api.main import create_app
+
+    db_path = tmp_path / "server_restart.db"
+    settings = APISettings(
+        database_url=f"sqlite:///{db_path}",
+        api_admin_key="qa-admin-secret",
+    )
+
+    # Server Lifecycle 1: Send chat interaction, submit feedback
+    app1 = create_app(settings)
+    client1 = TestClient(app1)
+    chat_resp = client1.post("/v1/chat", json={"message": "where is the training office?", "session_id": "s1"})
+    assert chat_resp.status_code == 200
+    rid = chat_resp.json()["request_id"]
+    fb_resp = client1.post("/v1/feedback", json={"request_id": rid, "rating": 1, "comment": "very clear!"})
+    assert fb_resp.status_code == 201
+    assert fb_resp.json()["id"] == 1
+
+    # Server Lifecycle 2: Restart server with the same database file
+    del client1
+    del app1
+
+    app2 = create_app(settings)
+    client2 = TestClient(app2)
+
+    list_resp = client2.get("/v1/feedback", headers={"X-API-Key": "qa-admin-secret"})
+    assert list_resp.status_code == 200
+    entries = list_resp.json()
+    assert len(entries) == 1
+    assert entries[0]["request_id"] == rid
+    assert entries[0]["rating"] == 1
+    assert entries[0]["comment"] == "very clear!"
