@@ -128,23 +128,24 @@ A green foundation build does not mean all six endpoints are complete.
 
 ## Lab 5 — persistence (scaffolding)
 
-The Lab 5 database layer is included but not wired into the API yet:
+The Lab 5 database persistence layer is fully implemented and wired into the API:
 
 - `src/assistant_api/db.py` — SQLModel tables (`ChatSession`, `Interaction`, `Feedback`) and `Repository`.
 - `sql/migrations/` — schema migrations applied in order by `scripts/migrate.py`.
 - `scripts/seed.py` — synthetic interactions/feedback only (no real student data).
+- `sql/my_queries.sql` — Part F analytical queries (Q1–Q3) and H2 advanced analysis with results.
 - `api-tests/` — manual curl and Postman checks for the Lab 5 contract.
 
 ```bash
 python scripts/migrate.py assistant.db
-python scripts/seed.py assistant.db 300   # requires R1 to be completed
+python scripts/seed.py assistant.db 300
 sqlite3 assistant.db < sql/my_queries.sql
 ```
 
-`Repository.add_feedback` (R1) and `list_feedback` (R2) remain TODOs, so the
-root API keeps its in-memory feedback store and the known `POST /v1/feedback`
-500 behavior. `/v1/chat` does not record interactions yet, and there is no
-`GET /v1/stats/intents` endpoint in the root app.
+`Repository.add_feedback` (R1) and `list_feedback` (R2) are fully implemented across both root and
+`lab05/starter/`. The API records interactions in `/v1/chat`, persists feedback across server restarts
+in `POST /v1/feedback`, lists feedback in `GET /v1/feedback` (with fallback support), and exposes
+`GET /v1/stats/intents`.
 
 ## Lab 6 — AI services & RAG (task assignment)
 

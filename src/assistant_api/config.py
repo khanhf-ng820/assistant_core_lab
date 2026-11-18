@@ -19,12 +19,25 @@ class APISettings(Settings):
     campus_lat: float = Field(default=10.7626, ge=-90, le=90)
     campus_lon: float = Field(default=106.6822, ge=-180, le=180)
     rate_limit_per_min: int = Field(default=30, gt=0)
+    database_url: str | None = Field(default=None)
+    session_salt: str = Field(default="dev-salt", repr=False)
 
 
 def load_api_settings(env_file: str | None = ".env") -> APISettings:
     base = load_settings(env_file)
-    fields = ("api_admin_key", "weather_url", "weather_timeout_s", "campus_lat", "campus_lon", "rate_limit_per_min")
+    fields = (
+        "api_admin_key",
+        "weather_url",
+        "weather_timeout_s",
+        "campus_lat",
+        "campus_lon",
+        "rate_limit_per_min",
+        "database_url",
+        "session_salt",
+    )
     values = {field: os.environ[field.upper()] for field in fields if field.upper() in os.environ}
+    if "database_url" not in values:
+        values["database_url"] = os.getenv("DATABASE_URL", "sqlite:///assistant.db")
     if values.get("api_admin_key") == "":
         values["api_admin_key"] = None
     try:
