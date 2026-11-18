@@ -173,14 +173,14 @@ retrieval paths for the Week 7 comparison.
 
 ### Primary assignments (merged version)
 
-| Member | ID | Primary responsibility | Done when |
-|---|---|---|---|
-| Nguyễn Phúc Khánh | 25125086 | A1 + integration lead | A1 test passes; one team version reviewed and merged; `v0.6-ai` tagged |
-| Trần Thành Lợi | 25125059 | A2 + optional bonus H3 | A2 test passes; full starter suite green; E14 re-checked if H3 is done |
-| Lý Tuấn Kiệt | 25125022 | S1–S3 + demo | `test_mini_search.py` 4/4 passes; explains inverted index and ranking |
-| Trần Phúc Khánh | 25125020 | Comparison doc + security/data check | `docs/lab6/path_comparison.md` has the table and 3 sentences; no key or `.env` committed |
-| Nguyễn Minh Khang | 25125018 | H1 five questions + QA | E21–E25 added (3 normal, 2 abstain); comparison re-run; new table + one sentence on failures |
-| Đặng Xuân Phát | 25125062 | H2 reflection + optional Ollama | `docs/lab6/reflection.md` has 5 lines; optional real-model comparison recorded |
+| Member | ID | Primary responsibility | Rotation reviewer | Done when |
+|---|---|---|---|---|
+| Nguyễn Phúc Khánh | 25125086 | A1 + integration lead | Trần Thành Lợi | A1 test passes; one team version reviewed and merged; `v0.6-ai` tagged |
+| Trần Thành Lợi | 25125059 | A2 + optional bonus H3 | Lý Tuấn Kiệt | A2 test passes; full starter suite green; E14 re-checked if H3 is done |
+| Lý Tuấn Kiệt | 25125022 | S1–S3 + demo | Trần Phúc Khánh | `test_mini_search.py` 4/4 passes; explains inverted index and ranking |
+| Trần Phúc Khánh | 25125020 | Comparison doc + security/data check | Nguyễn Minh Khang | `docs/lab6/path_comparison.md` has the table and 3 sentences; no key or `.env` committed |
+| Nguyễn Minh Khang | 25125018 | H1 five questions + QA | Đặng Xuân Phát | E21–E25 added (3 normal, 2 abstain); comparison re-run; new table + one sentence on failures |
+| Đặng Xuân Phát | 25125062 | H2 reflection + optional Ollama | Nguyễn Phúc Khánh | `docs/lab6/reflection.md` has 5 lines; optional real-model comparison recorded |
 
 ### Verification commands
 
