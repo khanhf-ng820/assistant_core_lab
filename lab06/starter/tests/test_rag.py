@@ -8,7 +8,7 @@ from assistant_core.guard import is_private_request
 from assistant_core.llm import StubLLM, parse_draft
 from assistant_core.rag.answerer import RagAnswerer
 from assistant_core.rag.chunker import load_folder
-from assistant_core.rag.index import make_index
+from assistant_core.rag.index import Hit, make_index
 from assistant_core.tools import run_tool_call
 
 KB = Path(__file__).resolve().parents[1] / "data" / "kb"
@@ -33,6 +33,15 @@ def test_retrieval_finds_thesis_rule(chunks, kind):
 def test_abstain_when_nothing_relevant(chunks):
     r = RagAnswerer(make_index("bm25", chunks), StubLLM()).answer("what is the capital of France")
     assert r.path == "abstain" and r.escalate
+
+
+def test_abstain_when_score_below_min_score(chunks):
+    class LowScoreIndex:
+        def search(self, question, k=3):
+            return [Hit(chunk=chunks[0], score=1.2)]  # Below default min_score=2.0
+
+    r = RagAnswerer(LowScoreIndex(), StubLLM(), min_score=2.0).answer("low relevance query")
+    assert r.path == "abstain" and r.escalate and r.confidence == 0.0
 
 
 def test_llm_answer_is_grounded(chunks):
