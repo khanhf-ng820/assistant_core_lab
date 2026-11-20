@@ -147,50 +147,38 @@ sqlite3 assistant.db < sql/my_queries.sql
 in `POST /v1/feedback`, lists feedback in `GET /v1/feedback` (with fallback support), and exposes
 `GET /v1/stats/intents`.
 
-## Lab 6 — AI services & RAG (task assignment)
+## Lab 6 — AI services & RAG (completed & integrated)
 
-Status: assignment only. No Lab 6 task has been implemented yet.
+Status: **Completed & Merged**. All Lab 6 tasks (S1–S3, A1–A2, H1–H3) are implemented, verified, merged into `main`, and tagged `v0.6-ai`.
 
 Source: `CSC10014_2026_Lab06_AI_Services_RAG_Tutorial.docx.pdf` (24 pages).
-Work only in `lab06/practice/` and `lab06/starter/`; do not change the root
-`src/assistant_core` app for this lab.
+Work done in `lab06/practice/`, `lab06/starter/`, and `docs/lab6/`. Root `src/assistant_core` remains untouched.
 
-The `lab06/starter/.venv` is already installed with Python 3.13 (the pinned
-pydantic/SQLModel versions do not support 3.14). Baseline before starting:
-`pytest -q` in `lab06/starter` → **2 failed (A1, A2), 40 passed**;
-`pytest -q test_mini_search.py` in `lab06/practice` → **2 failed, 2 passed**.
+Current status on `main`:
+- `lab06/starter`: **43 passed** in `pytest -q`
+- `lab06/practice`: **4 passed** in `pytest -q test_mini_search.py`
+- Path comparison (`eval/compare_paths.py`): **25 test cases** evaluated across deterministic, retrieval, and LLM (stub + Ollama)
 
-### Common task — every member
+### Team integration & PR registry
 
-The tutorial's Team Integration step requires each member to open a PR with:
-
-1. A working A1 and A2 (`src/assistant_core/rag/answerer.py`,
-   `src/assistant_core/llm.py`) and green tests.
-2. Their own `python eval/compare_paths.py` table.
-
-The team reviews the PRs, merges one version, and keeps the deterministic and
-retrieval paths for the Week 7 comparison.
-
-### Primary assignments (merged version)
-
-| Member | ID | Primary responsibility | Rotation reviewer | Done when |
-|---|---|---|---|---|
-| Nguyễn Phúc Khánh | 25125086 | A1 + integration lead | Trần Thành Lợi | A1 test passes; one team version reviewed and merged; `v0.6-ai` tagged |
-| Trần Thành Lợi | 25125059 | A2 + optional bonus H3 | Lý Tuấn Kiệt | A2 test passes; full starter suite green; E14 re-checked if H3 is done |
-| Lý Tuấn Kiệt | 25125022 | S1–S3 + demo | Trần Phúc Khánh | `test_mini_search.py` 4/4 passes; explains inverted index and ranking |
-| Trần Phúc Khánh | 25125020 | Comparison doc + security/data check | Nguyễn Minh Khang | `docs/lab6/path_comparison.md` has the table and 3 sentences; no key or `.env` committed |
-| Nguyễn Minh Khang | 25125018 | H1 five questions + QA | Đặng Xuân Phát | E21–E25 added (3 normal, 2 abstain); comparison re-run; new table + one sentence on failures |
-| Đặng Xuân Phát | 25125062 | H2 reflection + optional Ollama | Nguyễn Phúc Khánh | `docs/lab6/reflection.md` has 5 lines; optional real-model comparison recorded |
+| Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
+|---|---|---|---|---|---|
+| Nguyễn Phúc Khánh | 25125086 | A1 + integration lead | Trần Thành Lợi | [PR #51](https://github.com/khanhf-ng820/assistant_core_lab/pull/51) (Merged) | A1 test passes; one team version reviewed and merged; `v0.6-ai` tagged |
+| Trần Thành Lợi | 25125059 | A2 + optional bonus H3 | Lý Tuấn Kiệt | [PR #49](https://github.com/khanhf-ng820/assistant_core_lab/pull/49) (Merged) | A2 test passes; full starter suite green; E14 re-checked if H3 is done |
+| Lý Tuấn Kiệt | 25125022 | S1–S3 + demo | Trần Phúc Khánh | [PR #54](https://github.com/khanhf-ng820/assistant_core_lab/pull/54) (Merged) | `test_mini_search.py` 4/4 passes; explains inverted index and ranking |
+| Trần Phúc Khánh | 25125020 | Comparison doc + security/data check | Nguyễn Minh Khang | [PR #58](https://github.com/khanhf-ng820/assistant_core_lab/pull/58) (Merged) | `docs/lab6/path_comparison.md` has the table and 3 sentences; no key or `.env` committed |
+| Nguyễn Minh Khang | 25125018 | H1 five questions + QA | Đặng Xuân Phát | [PR #52](https://github.com/khanhf-ng820/assistant_core_lab/pull/52) (Merged) | E21–E25 added (3 normal, 2 abstain); comparison re-run; new table + failure analysis |
+| Đặng Xuân Phát | 25125062 | H2 reflection + optional Ollama | Nguyễn Phúc Khánh | [PR #55](https://github.com/khanhf-ng820/assistant_core_lab/pull/55) (Merged) | `docs/lab6/reflection.md` has 5 lines; optional real-model comparison recorded |
 
 ### Verification commands
 
 ```bash
 cd lab06/starter
-.venv/bin/python -m pytest -q                              # target: 42 passed
+.venv/bin/python -m pytest -q                              # result: 43 passed
 cd ../practice
-../starter/.venv/bin/python -m pytest -q test_mini_search.py  # target: 4 passed
+../starter/.venv/bin/python -m pytest -q test_mini_search.py  # result: 4 passed
 cd ../starter
-.venv/bin/python eval/compare_paths.py                     # paste the table into the PR
+.venv/bin/python eval/compare_paths.py                     # runs 25 cases (E01–E25)
 ```
 
 Bonus options: **H3** — in `src/assistant_core/rag/index.py`, make `tokenize`
