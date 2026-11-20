@@ -1,50 +1,62 @@
 # Lab 6 — Three assistant paths
 
 Owner: Trần Phúc Khánh (25125020) · Reviewer: Nguyễn Minh Khang
+Ollama bonus run: Đặng Xuân Phát (25125062) · Reviewer: Nguyễn Phúc Khánh
 
-Command (run in `lab06/starter`, A1 + A2 implemented, no `.env`, so the LLM
-path uses the offline `stub` provider; retrieval is BM25 with `min_score = 2.0`):
+## 1. Comparison table (team version on `main`)
+
+Command, run in `lab06/starter` on `main` after A1, A2, H3 and S1–S3 were
+merged. There is no `.env`, so the LLM path uses the offline `stub` provider.
+Retrieval is BM25 with `min_score = 2.0`.
 
 ```text
 $ python eval/compare_paths.py
 path                correct  abstain ok  p50 ms  max ms
-deterministic          7/20       5/5     0.0     0.6   fails: E01 E02 E05 E06 E07 E08 E09 E10 E11 E12 E13 E14 E15
-retrieval             16/20       4/5     0.0     0.1   fails: E13 E14 E15 E19
-llm (stub)            16/20       4/5     0.1     0.4   fails: E13 E14 E15 E19
+deterministic          7/20       5/5     0.0     0.8   fails: E01 E02 E05 E06 E07 E08 E09 E10 E11 E12 E13 E14 E15
+retrieval             15/20       3/5     0.0     0.1   fails: E13 E14 E15 E19 E20
+llm (stub)            15/20       3/5     0.2     0.5   fails: E13 E14 E15 E19 E20
 ```
 
-Starter suite at the same commit: `pytest -q` → 42 passed.
+Run twice with identical scores. At the same commit, `pytest -q` → 43 passed and
+`pytest -q test_mini_search.py` → 4 passed.
 
 | Path | Correct /20 | Abstain correct /5 | p50 latency | Controllability (1–5) | Main failure mode |
 |---|---|---|---|---|---|
 | deterministic | 7 | 5 | 0.0 ms | 5 | Cannot answer any rule/policy question (E01, E05–E15); only fee calc and office lookup work |
-| retrieval | 16 | 4 | 0.0 ms | 4 | Wrong top chunk on lexical mismatch (E13 ranks F26#1 above F26#3; E14 "credits" ≠ "credit"); false confidence on E19 (score 5.6 on H26#7.2 for an open-book question) |
-| llm (provider: stub) | 16 | 4 | 0.1 ms | 3 | Same as retrieval: it can only be as good as the retrieved sources; the grounding check (A2) stops invented citations but not a wrong-but-retrieved source |
+| retrieval | 15 | 3 | 0.0 ms | 4 | Wrong top chunk on lexical mismatch (E13, E14), and false confidence on off-topic exam questions (E19, E20) |
+| llm (provider: stub) | 15 | 3 | 0.2 ms | 3 | Same as retrieval: it can only be as good as the retrieved sources; the grounding check (A2) stops invented citations but not a wrong-but-retrieved source |
+| llm (provider: ollama `qwen2.5-coder:7b`, bonus) | 18 | 5 | 1204.1 ms | 3 | High latency; fails when retrieval misses the target chunk entirely (E13, E15) |
 
-Failure notes (checked by printing the BM25 hits):
+The Ollama row is Phát's bonus run from PR #55, measured before H3 was merged,
+so it was not re-run here (Ollama is not installed on this machine).
+
+### Failure notes (checked by printing the BM25 hits)
 
 - **E13** "when is tuition due" → F26#1 (2.28) beats F26#3 (1.48).
-- **E14** "can I take 32 credits" → H26#7.2 (2.09) beats H26#6.1 (1.48); the
-  plural `credits` does not match `credit` (this is the H3 bonus fix).
+- **E14** "can I take 32 credits" → after H3 the plural `credits` becomes
+  `credit` and now matches, but H26#7.2 (2.09) still beats H26#6.1 (1.43).
 - **E15** "how long can I keep a library book" → the router treats "library" as
   an office lookup before retrieval runs.
 - **E19** "is the final exam open-book" should abstain, but "final exam" gives
-  H26#7.2 a high score, so A1's score threshold does not trigger.
+  H26#7.2 a score of 5.62, so A1's threshold does not trigger.
+- **E20** "tell me about exams" is a **new failure caused by H3**: before H3,
+  `exams` matched nothing and the question abstained; now it stems to `exam`
+  and hits H26#7.2 at 4.0. H3 fixed a term match on E14 without changing its
+  result, and turned one correct abstain into a wrong answer.
 
-## Which path would you ship for policy questions, and why?
+## 2. Which path would you ship for policy questions, and why?
 
 I would ship the retrieval path for policy questions, because it gets the same
-16/20 as the LLM path while every answer is a direct quote of a cited handbook
-section, so there is nothing the model can paraphrase wrongly. It is also the
-most controllable of the paths that can answer policy questions at all: it has
-no provider cost, no network dependency, and fails in ways we can see and fix
-(ranking and tokenization, as in E13/E14), whereas the deterministic path
-answers only 7/20. The LLM path is worth keeping behind A1 (abstain before the
-model) and A2 (grounding check) for nicer wording, but only after a real model
-beats retrieval on this eval, since the stub adds latency without adding
-correctness.
+15/20 as the stub LLM path while every answer is a direct quote of a cited
+handbook section, so there is nothing a model can paraphrase wrongly. It is the
+most controllable path that can answer policy questions at all: no provider
+cost, no network dependency, and its failures are visible and fixable in
+ranking and tokenization (E13, E14, E20), whereas the deterministic path answers
+only 7/20. The real-model LLM path scored best in Phát's Ollama run (18/20) and
+is worth enabling behind A1 and A2 with retrieval as the fallback, but only once
+its ~1.2 s latency is acceptable and it is re-checked after H3.
 
-## Security / data check
+## 3. Security / data check
 
 | Check | Result |
 |---|---|
