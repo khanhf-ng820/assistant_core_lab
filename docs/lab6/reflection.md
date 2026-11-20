@@ -2,7 +2,6 @@
 
 **Author:** Đặng Xuân Phát (MSSV: 25125062, `@Dang-Xuan-Phat`)  
 **Reviewer:** Nguyễn Phúc Khánh (MSSV: 25125086, `@khanhf-ng820`)  
-**Branch:** `feat/lab06-h2-reflection-phat`  
 
 ---
 
@@ -18,7 +17,18 @@
 
 ## 2. Bonus — Real-Model Comparison (Ollama)
 
-Evaluated against `eval/cases.jsonl` (20 evaluation cases) using local Ollama (`qwen2.5-coder:7b`) versus the deterministic router and the deterministic stub LLM:
+### Reproducibility Details
+- **Command:**
+  ```bash
+  cd lab06/starter
+  LLM_PROVIDER=ollama LLM_MODEL=qwen2.5-coder:7b .venv/bin/python eval/compare_paths.py
+  ```
+  *(On Windows PowerShell: `$env:LLM_PROVIDER="ollama"; $env:LLM_MODEL="qwen2.5-coder:7b"; .\.venv\Scripts\python.exe eval/compare_paths.py`)*
+- **Model Metadata:** `qwen2.5-coder:7b` (Qwen2.5-Coder architecture, 7.6B parameters, GGUF Q4_K_M quantization, 32k context length).
+- **Environment:** Ollama version `0.40.16` running locally on `http://localhost:11434`.
+- **Model Selection Rationale:** `qwen2.5-coder:7b` was chosen as it was pre-installed and verified in the local developer environment, avoiding repetitive downloads of large model weights while offering robust structured JSON output compliance (`format="json"`).
+
+### Comparison Results (across 20 cases in `eval/cases.jsonl`)
 
 ```
 path                correct  abstain ok  p50 ms  max ms
