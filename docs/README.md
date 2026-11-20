@@ -8,6 +8,8 @@ This directory contains supporting documentation for the CSC10014 Smart Virtual 
 |---|---|
 | `README.md` | Overview of project documentation and contribution guidelines. |
 | `team.md` | Team members, assigned roles, and responsibilities. |
+| [`lab6/reflection.md`](lab6/reflection.md) | Lab 6 H2 reflection (open-book exam analogy) and real-model comparison with Ollama. |
+| [`lab6/path_comparison.md`](lab6/path_comparison.md) | Lab 6 path comparison (deterministic vs. retrieval vs. stub/Ollama LLM) and policy shipping recommendation. |
 | [`lab5/data_model.md`](lab5/data_model.md) | Lab 5 H3 schema critique, PII/retention decisions, ER model and security review. |
 | [`lab4/admin-feedback-security.md`](lab4/admin-feedback-security.md) | T3 authorization, mandatory chat rate limiting, tests, and integration handoff. |
 | [`ai-interface.md`](ai-interface.md) | Proposed future LLM interface: inputs, outputs, errors, and local fallback; no LLM calls in the current lab. |
