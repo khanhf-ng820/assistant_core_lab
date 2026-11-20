@@ -24,7 +24,21 @@ STOP = frozenset(
 
 
 def tokenize(text: str) -> list[str]:
-    return [t for t in re.findall(r"\w+", text.lower()) if t not in STOP]
+    """Lower-case words, minus stop words, plus a light plural stem (H3).
+
+    A final "s" is dropped from words longer than four letters, so "credits" and
+    "credit" become the same term. Measured effect on E14 is in
+    docs/lab6/path_comparison.md: the term now matches, but it does not change the
+    winning chunk.
+    """
+    tokens = []
+    for word in re.findall(r"\w+", text.lower()):
+        if word in STOP:
+            continue
+        if len(word) > 4 and word.endswith("s"):
+            word = word[:-1]
+        tokens.append(word)
+    return tokens
 
 
 @dataclass(frozen=True)
