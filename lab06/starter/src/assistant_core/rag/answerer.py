@@ -17,6 +17,7 @@ from assistant_core.models import Intent, Response, Source
 from assistant_core.rag.index import Index
 
 log = logging.getLogger("assistant_core.rag")
+
 ESCALATE_MSG = (
     "I'm not confident I can answer that from the official documents. "
     "Please contact the Training Office (room I.101) or ask your academic advisor."
@@ -39,13 +40,19 @@ class RagAnswerer:
 
     def answer(self, question: str) -> Response:
         hits = self.index.search(question, self.k)
-        # TODO A1 (2 lines): if there are no hits, or the best score hits[0].score is below self.min_score,
-        #   return Response(answer=ESCALATE_MSG, intent=Intent.UNKNOWN, path="abstain", escalate=True, confidence=0.0)
-        #   Why? Without a good source, the LLM would guess. Abstaining is cheaper and safer.
-        if not hits:
-            raise NotImplementedError("A1 — also handle the low-score case")
+
+        if not hits or hits[0].score < self.min_score:
+            return Response(
+                answer=ESCALATE_MSG,
+                intent=Intent.UNKNOWN,
+                path="abstain",
+                escalate=True,
+                confidence=0.0,
+            )
+
         sources = {h.chunk.id: Source(id=h.chunk.id, title=h.chunk.title) for h in hits}
         top = hits[0].chunk
+
         if self.llm is None:  # retrieval-only baseline
             return Response(
                 answer=f"{top.title}: {top.text}",
@@ -54,18 +61,33 @@ class RagAnswerer:
                 path="retrieval",
                 confidence=None,
             )
+
         prompt = build_prompt(question, hits, self.prompt_version)
+
         for attempt in range(self.retries + 1):
             try:
                 raw = self.llm.complete(prompt)
+
                 if self.tool_runner is not None:
                     try:
                         result = self.tool_runner(raw)
                     except InvalidRequest as exc:
-                        return Response(answer=str(exc), intent=Intent.FEE, path="tool", degraded=True)
+                        return Response(
+                            answer=str(exc),
+                            intent=Intent.FEE,
+                            path="tool",
+                            degraded=True,
+                        )
+
                     if result is not None:
-                        return Response(answer=result, intent=Intent.FEE, path="tool")
+                        return Response(
+                            answer=result,
+                            intent=Intent.FEE,
+                            path="tool",
+                        )
+
                 draft: AnswerDraft = parse_draft(raw, set(sources))
+
                 if draft.abstain:
                     return Response(
                         answer=ESCALATE_MSG,
@@ -74,6 +96,7 @@ class RagAnswerer:
                         escalate=True,
                         confidence=draft.confidence,
                     )
+
                 return Response(
                     answer=draft.answer,
                     intent=Intent.RULE,
@@ -81,8 +104,10 @@ class RagAnswerer:
                     confidence=draft.confidence,
                     sources=[sources[i] for i in draft.source_ids],
                 )
+
             except ProviderError as exc:
                 log.warning("llm attempt %d failed: %s", attempt + 1, exc)
+
         return Response(
             answer=f"{top.title}: {top.text}",
             intent=Intent.RULE,
