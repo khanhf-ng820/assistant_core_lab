@@ -27,9 +27,9 @@ testpaths = ["tests"]
 line-length = 120
 # The monolith is the intentionally bad "before" example, and src/assistant-core
 # is the superseded starter package; neither belongs to assistant_core.
-# Lab 4, Lab 5, and Lab 6 practice/starter files are separate exercise projects
-# with imports and variables reserved for TODOs; their checks belong to their
-# own project setups.
+# Lab 4, Lab 5, Lab 6, and Lab 7 practice/starter files are separate exercise
+# projects with imports and variables reserved for TODOs; their checks belong to
+# their own project setups.
 extend-exclude = [
     "lab03/monolith",
     "src/assistant-core",
@@ -39,6 +39,8 @@ extend-exclude = [
     "lab05/starter",
     "lab06/practice",
     "lab06/starter",
+    "lab07/practice",
+    "lab07/starter",
 ]
 
 [tool.ruff.lint]
