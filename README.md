@@ -208,3 +208,85 @@ model is installed.
 | H2 reflection | 1 |
 | Bonus (Ollama run or H3 fix) | +1 |
 | **Total** | **10 (+1)** |
+
+## Lab 7 — UI & full-stack (scaffolded)
+
+Status: **Scaffolded — exercises pending**. The Lab 7 starter, warm-up, worksheets, and Streamlit UI scaffold
+are in place, and the environment is verified. U1–U4, L1, L2, F1, the usability checklist, and H1/H2 are
+still to be completed.
+
+Source: `CSC10014_2026_Lab07_UI_Fullstack_Tutorial.docx.pdf` (20 pages).
+Work done in `lab07/practice/`, `lab07/starter/`, and `lab07/worksheets/`. Root `src/` remains untouched.
+
+### How to run both servers
+
+The UI never imports `assistant_core`; it talks to the backend only through the HTTP API. Start the API
+first, then the Streamlit page in a second terminal (both from `lab07/starter/`):
+
+```bash
+# terminal 1 — backend (http://127.0.0.1:8000)
+cd lab07/starter
+source .venv/bin/activate
+uvicorn assistant_api.main:create_app --factory
+
+# terminal 2 — UI (http://localhost:8501)
+cd lab07/starter
+source .venv/bin/activate
+streamlit run ui/app.py
+```
+
+Set `ASSISTANT_API_URL=http://<host>:<port>` before `streamlit run` if the API is not on port 8000.
+
+### Current status on `main`
+
+- `lab07/starter`: **47 passed, 2 failed** — the failures are the intended `L1`/`L2` TODOs in `ui/logic.py`
+- `lab07/practice`: **1 passed, 3 failed** — the failures are the intended `U2`–`U4` TODOs in `hello_streamlit.py`
+- `tests/test_ui.py`: **5 passed, 2 failed** (same L1/L2 TODOs); `F1` has no unit test and is checked in the browser (D.3)
+- UI scaffold: `ui/app.py` (page), `ui/api_client.py` (HTTP client), and `ui/logic.py` (testable helpers)
+- Baseline committed in `f13bdf1`; the root Ruff exclusion for `lab07` is in `1e9c94b`
+
+Warm-up U1–U4 is an individual exercise for each member; the team PR covers L1, L2, F1, and the checklist.
+
+### Team integration & PR registry
+
+| Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
+|---|---|---|---|---|---|
+| Nguyễn Phúc Khánh | 25125086 | Integration lead: merge UI, README start commands, tag `v0.7-mvp`, CI | Trần Thành Lợi | Scaffold [`f13bdf1`](https://github.com/khanhf-ng820/assistant_core_lab/commit/f13bdf1); PR pending | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
+| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | Pending PR | `test_format_sources` passes; sources visible in the browser |
+| Lý Tuấn Kiệt | 25125022 | L2 — escalation and degraded notes | Trần Phúc Khánh | Pending PR | `test_status_note` passes; both notes verified in D.4 |
+| Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | Pending PR | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
+| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + QA | Đặng Xuân Phát | Pending PR | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked |
+| Đặng Xuân Phát | 25125062 | UI/UX: checklist, accessibility, hallway test, H2 reading | Nguyễn Phúc Khánh | Pending PR | Checklist 10/10 ticked; phone-width check; H2 two sentences |
+
+### Verification commands
+
+```bash
+cd lab07/practice
+../starter/.venv/bin/python -m pytest -q                     # target: 4 passed (currently 1 passed, 3 failed)
+cd ../starter
+.venv/bin/python -m pytest -q                               # target: 49 passed (currently 47 passed, 2 failed)
+.venv/bin/python -m pytest -q tests/test_ui.py              # target: 7 passed (currently 5 passed, 2 failed)
+```
+
+Bonus options: **streaming** — use `st.write_stream` when the API supports token streaming; or a
+**better sources display** — expandable source entries with ID, title, and snippet.
+
+### Submission checklist
+
+| What | When | How |
+|---|---|---|
+| U1–U4 + L1, L2, F1, tests green; checklist ticked | end of session (draft PR OK) | PR link on the LMS |
+| Team MVP v1, tag `v0.7-mvp`, README with both start commands | 23:59 the day before Lab 8 | Tech Lead: tag link |
+| H1 observations + one fix; H2 two sentences | 23:59 the day before Lab 8 | PR link on the LMS |
+
+### Grading
+
+| Criterion | Points |
+|---|---|
+| U1–U4 tests pass | 2 |
+| L1, L2 tests pass; F1 works in the browser | 3 |
+| Every state in D.4 behaves as expected | 2 |
+| Usability checklist completed | 1 |
+| H1 three observations + one fix | 2 |
+| Bonus (streaming or nicer sources) | +1 |
+| **Total** | **10 (+1)** |
