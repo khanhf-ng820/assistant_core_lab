@@ -45,4 +45,5 @@ def test_format_sources():
 
 def test_status_note():
     assert "Training Office" in status_note(ChatResult(ok=True, escalate=True))
+    assert "directly from the source" in status_note(ChatResult(ok=True, degraded=True))
     assert status_note(ChatResult(ok=True)) is None
