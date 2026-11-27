@@ -33,6 +33,7 @@ if toast := st.session_state.pop("toast", None):
     st.toast(toast)
 if not client.healthy():
     st.error("The assistant backend is not reachable. Start it with: uvicorn assistant_api.main:create_app --factory")
+st.caption("AI assistant — check important decisions with the Training Office.")
 
 with st.sidebar:
     st.subheader("Try an example")
@@ -57,7 +58,7 @@ for i, m in enumerate(st.session_state.messages):
         rid = m.get("request_id")
         if rid and rid not in st.session_state.rated:
             c1, c2, _ = st.columns([1, 1, 6])
-            if c1.button("👍", key=f"up{i}"):
+            if c1.button("👍", key=f"up{i}", help="Helpful"):
                 client.send_feedback(rid, 1)
                 st.session_state.rated.add(rid)
                 st.toast("Thanks for your feedback!")
