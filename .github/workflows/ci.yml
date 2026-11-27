@@ -31,3 +31,22 @@ jobs:
         run: ruff check .
       - name: Ruff format
         run: ruff format --check .
+
+  lab07:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Lab 7 starter
+        working-directory: lab07/starter
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install -e .
+      - name: Lab 7 starter tests
+        working-directory: lab07/starter
+        run: python -m pytest -q
+      - name: Lab 7 practice tests
+        working-directory: lab07/practice
+        run: python -m pytest -q
