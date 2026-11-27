@@ -1,8 +1,8 @@
 # Lab 7 — E.3 hallway test
 
 Owner: Đặng Xuân Phát (25125062)
-Tester: classmate from another team (name / team): ____________________
-Date: ____________________
+Tester: classmate from another team (name / team): Từ Hoàng Anh
+Date: 2026-11-27
 Duration: 2 minutes
 Rule: no explanation; watch silently.
 
