@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # so "import ui..
 
 from ui.api_client import AssistantClient
 from ui.logic import EXAMPLES, WELCOME, format_sources, status_note, validate_input
+from ui.streaming import should_stream_message, stream_text
 
 st.set_page_config(page_title="FIT Study Assistant", page_icon="🎓")
 client = AssistantClient(os.getenv("ASSISTANT_API_URL", "http://127.0.0.1:8000"))
@@ -24,6 +25,8 @@ if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": WELCOME}]
 if "rated" not in st.session_state:
     st.session_state.rated = set()
+if "streamed_up_to" not in st.session_state:
+    st.session_state.streamed_up_to = 0
 
 st.title("🎓 FIT Study Assistant")
 if not client.healthy():
@@ -37,9 +40,14 @@ with st.sidebar:
     st.caption("This is an AI assistant. Check important decisions with the Training Office.")
 
 # ---- history -------------------------------------------------------------------
+total_messages = len(st.session_state.messages)
 for i, m in enumerate(st.session_state.messages):
     with st.chat_message(m["role"]):
-        st.markdown(m["content"])
+        if should_stream_message(i, m["role"], total_messages, st.session_state.streamed_up_to):
+            st.write_stream(stream_text(m["content"]))
+            st.session_state.streamed_up_to = i
+        else:
+            st.markdown(m["content"])
         if m.get("sources"):
             st.caption(m["sources"])
         if m.get("note"):
