@@ -256,7 +256,7 @@ describes the warm-up as an individual exercise; other members may still run it 
 | Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
 |---|---|---|---|---|---|
 | Nguyễn Phúc Khánh | 25125086 | Integration lead: U1–U4 evidence, merge UI, README, tag `v0.7-mvp`, CI | Trần Thành Lợi | U1–U4 evidence [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md); CI draft [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66); README updated | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
-| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | Pending; checkpoint Sat 28 Nov 12:00 | `test_format_sources` passes; sources visible in the browser |
+| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | PR open from `feat/lab07-l1-sources-thanhloi`; evidence [`docs/lab07/l1_sources.md`](docs/lab07/l1_sources.md) | `test_format_sources` passes; sources visible in the browser |
 | Lý Tuấn Kiệt | 25125022 | L2 — escalation and degraded notes | Trần Phúc Khánh | [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61) (Merged) | `test_status_note` passes; both notes verified in D.4 |
 | Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) open, conflicting; rebase pending | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
 | Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + D.4 QA | Đặng Xuân Phát | Pending; book the outside tester | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked and signed off |
@@ -275,6 +275,7 @@ cd ../starter
 ### Lab 7 evidence
 
 - U1–U4 warm-up: [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md)
+- L1 show sources: [`docs/lab07/l1_sources.md`](docs/lab07/l1_sources.md)
 - D.4 browser acceptance: [`docs/lab07/d4_acceptance.md`](docs/lab07/d4_acceptance.md)
 - H1 usability test: [`docs/lab07/h1_usability.md`](docs/lab07/h1_usability.md)
 - H2 reading: [`docs/lab07/h2_reading.md`](docs/lab07/h2_reading.md)
