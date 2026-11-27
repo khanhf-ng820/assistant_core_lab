@@ -209,11 +209,12 @@ model is installed.
 | Bonus (Ollama run or H3 fix) | +1 |
 | **Total** | **10 (+1)** |
 
-## Lab 7 — UI & full-stack (scaffolded)
+## Lab 7 — UI & full-stack (in progress)
 
-Status: **Scaffolded — exercises pending**. The Lab 7 starter, warm-up, worksheets, and Streamlit UI scaffold
-are in place, and the environment is verified. U1–U4, L1, L2, F1, the usability checklist, and H1/H2 are
-still to be completed.
+Status: **In progress — U1–U4 and L2 merged; L1 and F1 pending.** The Lab 7 starter, warm-up, worksheets,
+and Streamlit UI scaffold are in place. `lab07/practice` is 4/4; `lab07/starter` is 48 passed / 1 failed
+(the L1 TODO). F1 is in [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) and needs a rebase. The usability checklist, H1/H2, and the `v0.7-mvp` tag
+remain.
 
 Source: `CSC10014_2026_Lab07_UI_Fullstack_Tutorial.docx.pdf` (20 pages).
 Work done in `lab07/practice/`, `lab07/starter/`, and `lab07/worksheets/`. Root `src/` remains untouched.
@@ -239,37 +240,50 @@ Set `ASSISTANT_API_URL=http://<host>:<port>` before `streamlit run` if the API i
 
 ### Current status on `main`
 
-- `lab07/starter`: **47 passed, 2 failed** — the failures are the intended `L1`/`L2` TODOs in `ui/logic.py`
-- `lab07/practice`: **1 passed, 3 failed** — the failures are the intended `U2`–`U4` TODOs in `hello_streamlit.py`
-- `tests/test_ui.py`: **5 passed, 2 failed** (same L1/L2 TODOs); `F1` has no unit test and is checked in the browser (D.3)
+- `lab07/practice`: **4 passed** — U1–U4 complete (merged via [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61))
+- `lab07/starter`: **48 passed, 1 failed** — only the intended `L1` TODO in `ui/logic.py`
+- `tests/test_ui.py`: **6 passed, 1 failed** (same L1 TODO); `F1` has no unit test and is checked in the browser (D.3)
 - UI scaffold: `ui/app.py` (page), `ui/api_client.py` (HTTP client), and `ui/logic.py` (testable helpers)
 - Baseline committed in `f13bdf1`; the root Ruff exclusion for `lab07` is in `1e9c94b`
+- Root CI is green. The dedicated Lab 7 CI job is in draft [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66) and is expected to be red until L1 lands.
+- Bonus streaming is tracked in [issue #65](https://github.com/khanhf-ng820/assistant_core_lab/issues/65); its PR follows L1 + F1.
 
-Warm-up U1–U4 is an individual exercise for each member; the team PR covers L1, L2, F1, and the checklist.
+U1–U4: implemented and merged via [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61); Nguyễn Phúc Khánh owns the evidence/verification. The PDF
+describes the warm-up as an individual exercise; other members may still run it for practice.
 
 ### Team integration & PR registry
 
 | Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
 |---|---|---|---|---|---|
-| Nguyễn Phúc Khánh | 25125086 | Integration lead: merge UI, README start commands, tag `v0.7-mvp`, CI | Trần Thành Lợi | Scaffold [`f13bdf1`](https://github.com/khanhf-ng820/assistant_core_lab/commit/f13bdf1); PR pending | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
-| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | Pending PR | `test_format_sources` passes; sources visible in the browser |
-| Lý Tuấn Kiệt | 25125022 | L2 — escalation and degraded notes | Trần Phúc Khánh | Pending PR | `test_status_note` passes; both notes verified in D.4 |
-| Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | Pending PR | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
-| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + QA | Đặng Xuân Phát | Pending PR | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked |
-| Đặng Xuân Phát | 25125062 | UI/UX: checklist, accessibility, hallway test, H2 reading | Nguyễn Phúc Khánh | Pending PR | Checklist 10/10 ticked; phone-width check; H2 two sentences |
+| Nguyễn Phúc Khánh | 25125086 | Integration lead: U1–U4 evidence, merge UI, README, tag `v0.7-mvp`, CI | Trần Thành Lợi | U1–U4 evidence [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md); CI draft [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66); README updated | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
+| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | Pending; checkpoint Sat 28 Nov 12:00 | `test_format_sources` passes; sources visible in the browser |
+| Lý Tuấn Kiệt | 25125022 | L2 — escalation and degraded notes | Trần Phúc Khánh | [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61) (Merged) | `test_status_note` passes; both notes verified in D.4 |
+| Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) open, conflicting; rebase pending | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
+| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + D.4 QA | Đặng Xuân Phát | Pending; book the outside tester | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked and signed off |
+| Đặng Xuân Phát | 25125062 | UI/UX: checklist, accessibility, hallway test, H2 reading | Nguyễn Phúc Khánh | Pending; pre-check now | Checklist 10/10 ticked; phone-width check; H2 two sentences; E.3 observation |
 
 ### Verification commands
 
 ```bash
 cd lab07/practice
-../starter/.venv/bin/python -m pytest -q                     # target: 4 passed (currently 1 passed, 3 failed)
+../starter/.venv/bin/python -m pytest -q                     # target: 4 passed (currently 4 passed)
 cd ../starter
-.venv/bin/python -m pytest -q                               # target: 49 passed (currently 47 passed, 2 failed)
-.venv/bin/python -m pytest -q tests/test_ui.py              # target: 7 passed (currently 5 passed, 2 failed)
+.venv/bin/python -m pytest -q                               # target: 49 passed (currently 48 passed, 1 failed)
+.venv/bin/python -m pytest -q tests/test_ui.py              # target: 7 passed (currently 6 passed, 1 failed)
 ```
 
-Bonus options: **streaming** — use `st.write_stream` when the API supports token streaming; or a
-**better sources display** — expandable source entries with ID, title, and snippet.
+### Lab 7 evidence
+
+- U1–U4 warm-up: [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md)
+- D.4 browser acceptance: [`docs/lab07/d4_acceptance.md`](docs/lab07/d4_acceptance.md)
+- H1 usability test: [`docs/lab07/h1_usability.md`](docs/lab07/h1_usability.md)
+- H2 reading: [`docs/lab07/h2_reading.md`](docs/lab07/h2_reading.md)
+- E.3 hallway test: [`docs/lab07/hallway_test.md`](docs/lab07/hallway_test.md)
+- Raw worksheets: [`lab07/worksheets/`](lab07/worksheets/)
+
+Bonus: **streaming/typewriter** — tracked in [issue #65](https://github.com/khanhf-ng820/assistant_core_lab/issues/65); a client-side `stream_text` helper plus
+`st.write_stream` for the newest answer. It must not block the tag. A better sources display remains an
+alternative.
 
 ### Submission checklist
 
