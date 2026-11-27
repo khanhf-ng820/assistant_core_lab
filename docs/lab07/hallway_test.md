@@ -8,4 +8,4 @@ Rule: no explanation; watch silently.
 
 ## One thing that surprised them
 
-Write the one thing that surprised the tester.
+Từ Hoàng Anh noted that the interface looked clean and smartly designed ("Giao diện đẹp, thiết kế thông minh").
