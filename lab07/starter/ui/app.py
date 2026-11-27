@@ -12,7 +12,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # so "import ui..." works under streamlit
 
 from ui.api_client import AssistantClient
-from ui.logic import EXAMPLES, WELCOME, format_sources, status_note, validate_input
+from ui.logic import AI_NOTICE, EXAMPLES, WELCOME, format_sources, status_note, validate_input
 from ui.streaming import should_stream_message, stream_text
 
 st.set_page_config(page_title="FIT Study Assistant", page_icon="🎓")
@@ -33,14 +33,14 @@ if toast := st.session_state.pop("toast", None):
     st.toast(toast)
 if not client.healthy():
     st.error("The assistant backend is not reachable. Start it with: uvicorn assistant_api.main:create_app --factory")
-st.caption("AI assistant — check important decisions with the Training Office.")
+st.caption(AI_NOTICE)
 
 with st.sidebar:
     st.subheader("Try an example")
     for ex in EXAMPLES:
         if st.button(ex, use_container_width=True):
             st.session_state.pending = ex
-    st.caption("This is an AI assistant. Check important decisions with the Training Office.")
+    st.caption(AI_NOTICE)
 
 # ---- history -------------------------------------------------------------------
 total_messages = len(st.session_state.messages)
@@ -62,7 +62,7 @@ for i, m in enumerate(st.session_state.messages):
                 client.send_feedback(rid, 1)
                 st.session_state.rated.add(rid)
                 st.toast("Thanks for your feedback!")
-            if c2.button("👎", key=f"down{i}"):
+            if c2.button("👎", key=f"down{i}", help="Not helpful"):
                 client.send_feedback(rid, -1)
                 st.session_state.rated.add(rid)
                 st.session_state.toast = "Thanks — we will look at this answer."

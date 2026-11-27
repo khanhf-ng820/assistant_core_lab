@@ -7,6 +7,7 @@ WELCOME = ("Hi! I can answer questions about fees, offices and the student handb
            "Try: “Can I register my thesis with 118 credits?”")
 EXAMPLES = ["Can I register my thesis with 118 credits?", "Tuition for 18 credits and 2 retake",
             "Where is the library?", "I lost my student card"]
+AI_NOTICE = "This is an AI assistant. Check important decisions with the Training Office."
 
 
 def validate_input(text: str) -> str | None:

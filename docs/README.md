@@ -8,6 +8,10 @@ This directory contains supporting documentation for the CSC10014 Smart Virtual 
 |---|---|
 | `README.md` | Overview of project documentation and contribution guidelines. |
 | `team.md` | Team members, assigned roles, and responsibilities. |
+| [`lab07/u1-u4.md`](lab07/u1-u4.md) | Lab 7 U1–U4 Streamlit warm-up verification evidence. |
+| [`lab07/l1_sources.md`](lab07/l1_sources.md) | Lab 7 L1 source formatting implementation notes and verification. |
+| [`lab07/d4_acceptance.md`](lab07/d4_acceptance.md) | Lab 7 D.4 browser acceptance checklist and evidence screenshots. |
+| [`lab07/h1_usability.md`](lab07/h1_usability.md) | Lab 7 H1 10-minute real-user usability test report and fix tracking. |
 | [`lab07/h2_reading.md`](lab07/h2_reading.md) | Lab 7 H2 reading reflection on Google PAIR Guidebook (Feedback + Control, Errors + Graceful Failure). |
 | [`lab07/hallway_test.md`](lab07/hallway_test.md) | Lab 7 E.3 two-minute hallway usability test template and observation record. |
 | [`lab6/reflection.md`](lab6/reflection.md) | Lab 6 H2 reflection (open-book exam analogy) and real-model comparison with Ollama. |

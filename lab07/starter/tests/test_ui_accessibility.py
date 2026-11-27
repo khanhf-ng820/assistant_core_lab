@@ -7,7 +7,7 @@ from pathlib import Path
 from streamlit.testing.v1 import AppTest
 
 from ui.api_client import AssistantClient
-from ui.logic import EXAMPLES, WELCOME
+from ui.logic import AI_NOTICE, EXAMPLES, WELCOME
 
 APP_PATH = str(Path(__file__).resolve().parents[1] / "ui" / "app.py")
 
@@ -20,7 +20,7 @@ def _run_app(monkeypatch, *, healthy: bool = True) -> AppTest:
 def test_initial_screen_shows_ai_notice_welcome_and_examples(monkeypatch):
     at = _run_app(monkeypatch, healthy=True)
     assert not at.error
-    assert any("AI assistant" in c.value for c in at.caption)
+    assert AI_NOTICE in [c.value for c in at.caption]
     assert WELCOME in [m.value for m in at.markdown]
     sidebar_labels = [b.label for b in at.sidebar.button]
     for example in EXAMPLES:
@@ -44,7 +44,7 @@ def test_overlong_input_warns_without_calling_api(monkeypatch):
     assert "too long" in at.warning[0].value
 
 
-def test_helpful_button_includes_text_tooltip(monkeypatch):
+def test_rating_buttons_include_text_tooltips(monkeypatch):
     monkeypatch.setattr(AssistantClient, "healthy", lambda self: True)
     at = AppTest.from_file(APP_PATH)
     at.session_state["messages"] = [
@@ -54,5 +54,8 @@ def test_helpful_button_includes_text_tooltip(monkeypatch):
     at.session_state["streamed_up_to"] = 1
     at.run(timeout=10)
     thumbs_up = [b for b in at.button if b.label == "👍"]
+    thumbs_down = [b for b in at.button if b.label == "👎"]
     assert len(thumbs_up) == 1
     assert thumbs_up[0].help == "Helpful"
+    assert len(thumbs_down) == 1
+    assert thumbs_down[0].help == "Not helpful"
