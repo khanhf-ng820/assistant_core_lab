@@ -5,6 +5,7 @@ Tester (not in the team, first name only): ____________________
 Date: ____________________
 Task: "Find out if you can register your thesis with 118 credits, and where to replace a lost student card."
 Rule: do not help or explain; watch and take notes.
+Also fill the official worksheet at [`lab07/worksheets/user_test_observations.md`](../../lab07/worksheets/user_test_observations.md).
 
 ## Three misunderstandings
 
@@ -19,6 +20,8 @@ Rule: do not help or explain; watch and take notes.
 Describe the one misunderstanding you fixed and why.
 
 ## Before / after
+
+_Screenshots pending — save `docs/lab07/screenshots/h1-before.png` and `docs/lab07/screenshots/h1-after.png` after the H1 fix._
 
 ![Before the fix](screenshots/h1-before.png)
 
