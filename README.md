@@ -211,7 +211,7 @@ model is installed.
 
 ## Lab 7 — UI & full-stack (in progress)
 
-Status: **In progress — Core UI (L1, L2, F1), streaming bonus, Lab 7 CI, E.1–E.3, and H2 merged; H1 usability test, final D.4 sign-off, and `v0.7-mvp` tag remain.** `lab07/practice` is **4 passed** and `lab07/starter` is **55 passed**.
+Status: **MVP v1 tagged `v0.7-mvp` — Core UI (L1, L2, F1), streaming bonus, Lab 7 CI, E.1–E.3, H2, and integrated D.4 sign-off complete; H1 real-user usability test remains before Lab 8.** `lab07/practice` is **4 passed** and `lab07/starter` is **55 passed**.
 
 Source: `CSC10014_2026_Lab07_UI_Fullstack_Tutorial.docx.pdf` (20 pages).
 Work done in `lab07/practice/`, `lab07/starter/`, and `lab07/worksheets/`. Root `src/` remains untouched.
@@ -252,11 +252,11 @@ describes the warm-up as an individual exercise; other members may still run it 
 
 | Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
 |---|---|---|---|---|---|
-| Nguyễn Phúc Khánh | 25125086 | Integration lead: U1–U4 evidence, streaming bonus, CI, merge UI, README, tag `v0.7-mvp` | Trần Thành Lợi | [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66) & [PR #67](https://github.com/khanhf-ng820/assistant_core_lab/pull/67) (Merged); [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md); tag pending H1 + final D.4 | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
+| Nguyễn Phúc Khánh | 25125086 | Integration lead: U1–U4 evidence, streaming bonus, CI, merge UI, README, tag `v0.7-mvp` | Trần Thành Lợi | [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66) & [PR #67](https://github.com/khanhf-ng820/assistant_core_lab/pull/67) (Merged); [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md); D.4 signed off; `v0.7-mvp` tagged | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
 | Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | [PR #73](https://github.com/khanhf-ng820/assistant_core_lab/pull/73) (Merged); [`docs/lab07/l1_sources.md`](docs/lab07/l1_sources.md) | `test_format_sources` passes; sources visible in the browser |
 | Lý Tuấn Kiệt | 25125022 | L2 — escalation and degraded notes | Trần Phúc Khánh | [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61) (Merged) | `test_status_note` passes; both notes verified in D.4 |
 | Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) (Merged) | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
-| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + D.4 QA | Đặng Xuân Phát | [PR #71](https://github.com/khanhf-ng820/assistant_core_lab/pull/71) (Merged — preliminary D.4); H1 session + final D.4 pending | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked and signed off |
+| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + D.4 QA | Đặng Xuân Phát | [PR #71](https://github.com/khanhf-ng820/assistant_core_lab/pull/71) (Merged — preliminary D.4); integrated D.4 signed off; H1 session pending | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked and signed off |
 | Đặng Xuân Phát | 25125062 | UI/UX: checklist, accessibility, hallway test, H2 reading | Nguyễn Phúc Khánh | [PR #70](https://github.com/khanhf-ng820/assistant_core_lab/pull/70) (Merged) | Checklist 10/10 ticked; phone-width check; H2 two sentences; E.3 observation |
 
 ### Verification commands

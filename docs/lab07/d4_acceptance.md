@@ -1,8 +1,8 @@
 # Lab 7 — D.4 browser acceptance
 
-Runner: Nguyễn Minh Khang (25125018)
+Runner: Nguyễn Minh Khang (25125018) (preliminary); Nguyễn Phúc Khánh (25125086) (integrated rerun on `main` at `faafb88`)
 Sign-off: Nguyễn Phúc Khánh (25125086)
-Status: **Preliminary browser QA recorded. Integration rerun and sign-off pending.**
+Status: **Integrated D.4 verified on `main` (`faafb88`) and signed off.** *(H1 real-user usability test remains pending.)*
 
 Run with both servers from `lab07/starter/`:
 
@@ -34,6 +34,22 @@ The practice suite passed all four tests. The starter suite on `main` had 48 pas
 - **Blocked on `main`.** The F1 button is in PR #63.
 - **Pass on the preview.** Clicking 👎 displayed “Thanks — we will look at this answer,” hid both rating buttons and persisted one `rating = -1` row in SQLite. [Screenshot](screenshots/d4-preview-downvote.png)
 
-Repeat D.4 and the F1 extra check on the integrated build once L1 and F1 land. The 👍 result remains open under [issue #69](https://github.com/khanhf-ng820/assistant_core_lab/issues/69).
+## Integrated verification on `main` (`faafb88`, 2026-11-28)
 
-Sign-off: ____________________  Date: ____________
+Started both servers from `lab07/starter/` (`uvicorn assistant_api.main:create_app --factory --host 127.0.0.1 --port 8000` → `/health` `200`, `streamlit run ui/app.py --server.headless true --server.port 8501` → `200`) and exercised all 6 D.4 states + F1 via `streamlit.testing.v1.AppTest` against the live FastAPI server:
+
+| # | State | Expected | Observed on `main` (`faafb88`) |
+|---|---|---|---|
+| 1 | Click an example in the sidebar | Question and answer appear | **Pass.** Sidebar click rendered the thesis answer (`5.3 Thesis registration`). |
+| 2 | Ask “Can I register my thesis with 118 credits?” | Answer + `Sources: H26#5.3 — …` | **Pass.** Rendered answer + caption `Sources: H26#5.3 — 5.3 Thesis registration`. |
+| 3 | Ask “what is the capital of France” | Escalation note with the Training Office | **Pass.** Rendered escalation info box: `Training Office, room I.101`. |
+| 4 | Press Enter / submit whitespace (`"   "`) | Nothing is sent | **Pass.** Messages stayed `7 -> 7` and warning `Please type a question.` appeared. |
+| 5 | Click 👍 | `"Thanks for your feedback!"` toast; rating persisted | **Pass.** Toast `Thanks for your feedback!` appeared; `(f64acf88521b, 1)` persisted in `assistant.db`. |
+| 6 | Stop the API, ask again | `"Cannot reach the assistant…"` instead of a crash | **Pass.** Error banner `The assistant backend is not reachable...` and `⚠️ Cannot reach the assistant. Is the backend running?` rendered without crashing. |
+
+## F1 extra check (`main` at `faafb88`)
+
+- Click 👎 → toast `Thanks — we will look at this answer.` appeared.
+- `(1a48851b1057, -1)` persisted in `assistant.db` `feedback` table.
+
+Sign-off: Nguyễn Phúc Khánh  Date: 2026-11-28
