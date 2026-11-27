@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # so "import ui..
 
 from ui.api_client import AssistantClient
 from ui.logic import EXAMPLES, WELCOME, format_sources, status_note, validate_input
+from ui.streaming import should_stream_message, stream_text
 
 st.set_page_config(page_title="FIT Study Assistant", page_icon="🎓")
 client = AssistantClient(os.getenv("ASSISTANT_API_URL", "http://127.0.0.1:8000"))
@@ -24,8 +25,12 @@ if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": WELCOME}]
 if "rated" not in st.session_state:
     st.session_state.rated = set()
+if "streamed_up_to" not in st.session_state:
+    st.session_state.streamed_up_to = 0
 
 st.title("🎓 FIT Study Assistant")
+if toast := st.session_state.pop("toast", None):
+    st.toast(toast)
 if not client.healthy():
     st.error("The assistant backend is not reachable. Start it with: uvicorn assistant_api.main:create_app --factory")
 
@@ -37,9 +42,14 @@ with st.sidebar:
     st.caption("This is an AI assistant. Check important decisions with the Training Office.")
 
 # ---- history -------------------------------------------------------------------
+total_messages = len(st.session_state.messages)
 for i, m in enumerate(st.session_state.messages):
     with st.chat_message(m["role"]):
-        st.markdown(m["content"])
+        if should_stream_message(i, m["role"], total_messages, st.session_state.streamed_up_to):
+            st.write_stream(stream_text(m["content"]))
+            st.session_state.streamed_up_to = i
+        else:
+            st.markdown(m["content"])
         if m.get("sources"):
             st.caption(m["sources"])
         if m.get("note"):
@@ -51,8 +61,11 @@ for i, m in enumerate(st.session_state.messages):
                 client.send_feedback(rid, 1)
                 st.session_state.rated.add(rid)
                 st.toast("Thanks for your feedback!")
-            # TODO F1 (4 lines): add a 👎 button in c2 with key=f"down{i}" that sends rating -1,
-            #   remembers rid in st.session_state.rated and shows st.toast("Thanks — we will look at this answer.")
+            if c2.button("👎", key=f"down{i}"):
+                client.send_feedback(rid, -1)
+                st.session_state.rated.add(rid)
+                st.session_state.toast = "Thanks — we will look at this answer."
+                st.rerun()  # redraw now so both buttons disappear; the toast is shown on the next run
 
 # ---- new question ----------------------------------------------------------------
 question = st.chat_input("Ask about fees, offices or the handbook…") or st.session_state.pop("pending", None)
