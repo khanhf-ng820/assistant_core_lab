@@ -211,10 +211,7 @@ model is installed.
 
 ## Lab 7 — UI & full-stack (in progress)
 
-Status: **In progress — U1–U4 and L2 merged; L1 and F1 pending.** The Lab 7 starter, warm-up, worksheets,
-and Streamlit UI scaffold are in place. `lab07/practice` is 4/4; `lab07/starter` is 48 passed / 1 failed
-(the L1 TODO). F1 is in [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) and needs a rebase. The usability checklist, H1/H2, and the `v0.7-mvp` tag
-remain.
+Status: **In progress — Core UI (L1, L2, F1), streaming bonus, Lab 7 CI, E.1–E.3, and H2 merged; H1 usability test, final D.4 sign-off, and `v0.7-mvp` tag remain.** `lab07/practice` is **4 passed** and `lab07/starter` is **55 passed**.
 
 Source: `CSC10014_2026_Lab07_UI_Fullstack_Tutorial.docx.pdf` (20 pages).
 Work done in `lab07/practice/`, `lab07/starter/`, and `lab07/worksheets/`. Root `src/` remains untouched.
@@ -241,12 +238,12 @@ Set `ASSISTANT_API_URL=http://<host>:<port>` before `streamlit run` if the API i
 ### Current status on `main`
 
 - `lab07/practice`: **4 passed** — U1–U4 complete (merged via [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61))
-- `lab07/starter`: **48 passed, 1 failed** — only the intended `L1` TODO in `ui/logic.py`
-- `tests/test_ui.py`: **6 passed, 1 failed** (same L1 TODO); `F1` has no unit test and is checked in the browser (D.3)
-- UI scaffold: `ui/app.py` (page), `ui/api_client.py` (HTTP client), and `ui/logic.py` (testable helpers)
-- Baseline committed in `f13bdf1`; the root Ruff exclusion for `lab07` is in `1e9c94b`
-- Root CI is green. The dedicated Lab 7 CI job is in draft [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66) and is expected to be red until L1 lands.
-- Bonus streaming is tracked in [issue #65](https://github.com/khanhf-ng820/assistant_core_lab/issues/65); its PR follows L1 + F1.
+- `lab07/starter`: **55 passed** — L1 ([PR #73](https://github.com/khanhf-ng820/assistant_core_lab/pull/73)), L2 ([PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61)), F1 ([PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63)), streaming bonus ([PR #67](https://github.com/khanhf-ng820/assistant_core_lab/pull/67)), and UI accessibility tests ([PR #70](https://github.com/khanhf-ng820/assistant_core_lab/pull/70)) merged
+- `tests/test_ui.py`: **7 passed**; `tests/test_streaming.py`: **2 passed**; `tests/test_ui_accessibility.py`: **4 passed**
+- UI files: `ui/app.py` (page), `ui/api_client.py` (HTTP client), `ui/logic.py` (testable helpers), and `ui/streaming.py` (streaming bonus)
+- Baseline committed in `f13bdf1`; root Ruff exclusion in `1e9c94b`
+- Root CI and the dedicated Lab 7 CI job ([PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66)) are green on `main` (Python `3.10` and `3.12`)
+- Bonus streaming ([issue #65](https://github.com/khanhf-ng820/assistant_core_lab/issues/65)) is merged via [PR #67](https://github.com/khanhf-ng820/assistant_core_lab/pull/67)
 
 U1–U4: implemented and merged via [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61); Nguyễn Phúc Khánh owns the evidence/verification. The PDF
 describes the warm-up as an individual exercise; other members may still run it for practice.
@@ -255,21 +252,21 @@ describes the warm-up as an individual exercise; other members may still run it 
 
 | Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
 |---|---|---|---|---|---|
-| Nguyễn Phúc Khánh | 25125086 | Integration lead: U1–U4 evidence, merge UI, README, tag `v0.7-mvp`, CI | Trần Thành Lợi | U1–U4 evidence [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md); CI draft [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66); README updated | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
-| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | PR open from `feat/lab07-l1-sources-thanhloi`; evidence [`docs/lab07/l1_sources.md`](docs/lab07/l1_sources.md) | `test_format_sources` passes; sources visible in the browser |
+| Nguyễn Phúc Khánh | 25125086 | Integration lead: U1–U4 evidence, streaming bonus, CI, merge UI, README, tag `v0.7-mvp` | Trần Thành Lợi | [PR #66](https://github.com/khanhf-ng820/assistant_core_lab/pull/66) & [PR #67](https://github.com/khanhf-ng820/assistant_core_lab/pull/67) (Merged); [`docs/lab07/u1-u4.md`](docs/lab07/u1-u4.md); tag pending H1 + final D.4 | One UI version merged; both start commands documented; `v0.7-mvp` tagged; CI green |
+| Trần Thành Lợi | 25125059 | L1 — show sources under each answer | Lý Tuấn Kiệt | [PR #73](https://github.com/khanhf-ng820/assistant_core_lab/pull/73) (Merged); [`docs/lab07/l1_sources.md`](docs/lab07/l1_sources.md) | `test_format_sources` passes; sources visible in the browser |
 | Lý Tuấn Kiệt | 25125022 | L2 — escalation and degraded notes | Trần Phúc Khánh | [PR #61](https://github.com/khanhf-ng820/assistant_core_lab/pull/61) (Merged) | `test_status_note` passes; both notes verified in D.4 |
-| Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) open, conflicting; rebase pending | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
-| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + D.4 QA | Đặng Xuân Phát | Pending; book the outside tester | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked and signed off |
-| Đặng Xuân Phát | 25125062 | UI/UX: checklist, accessibility, hallway test, H2 reading | Nguyễn Phúc Khánh | Pending; pre-check now | Checklist 10/10 ticked; phone-width check; H2 two sentences; E.3 observation |
+| Trần Phúc Khánh | 25125020 | F1 — 👎 feedback button + security/data check | Nguyễn Minh Khang | [PR #63](https://github.com/khanhf-ng820/assistant_core_lab/pull/63) (Merged) | Rating `-1` persists; toast appears; buttons disappear; no secrets committed |
+| Nguyễn Minh Khang | 25125018 | H1 — real-user usability test + D.4 QA | Đặng Xuân Phát | [PR #71](https://github.com/khanhf-ng820/assistant_core_lab/pull/71) (Merged — preliminary D.4); H1 session + final D.4 pending | Three observations in the worksheet; one fix with before/after screenshot; D.4 states checked and signed off |
+| Đặng Xuân Phát | 25125062 | UI/UX: checklist, accessibility, hallway test, H2 reading | Nguyễn Phúc Khánh | [PR #70](https://github.com/khanhf-ng820/assistant_core_lab/pull/70) (Merged) | Checklist 10/10 ticked; phone-width check; H2 two sentences; E.3 observation |
 
 ### Verification commands
 
 ```bash
 cd lab07/practice
-../starter/.venv/bin/python -m pytest -q                     # target: 4 passed (currently 4 passed)
+../starter/.venv/bin/python -m pytest -q                     # result: 4 passed
 cd ../starter
-.venv/bin/python -m pytest -q                               # target: 49 passed (currently 48 passed, 1 failed)
-.venv/bin/python -m pytest -q tests/test_ui.py              # target: 7 passed (currently 6 passed, 1 failed)
+.venv/bin/python -m pytest -q                               # result: 55 passed
+.venv/bin/python -m pytest -q tests/test_ui.py              # result: 7 passed
 ```
 
 ### Lab 7 evidence
