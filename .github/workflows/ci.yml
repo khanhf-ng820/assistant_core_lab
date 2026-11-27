@@ -48,5 +48,6 @@ jobs:
         working-directory: lab07/starter
         run: python -m pytest -q
       - name: Lab 7 practice tests
+        if: ${{ !cancelled() }}
         working-directory: lab07/practice
         run: python -m pytest -q
