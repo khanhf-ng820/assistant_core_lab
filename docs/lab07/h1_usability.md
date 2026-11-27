@@ -1,8 +1,8 @@
 # Lab 7 — H1 usability test
 
 Owner: Nguyễn Minh Khang (25125018)
-Status: **Awaiting the 10-minute session with a participant outside Team 07.**
-Tester (not in the team, first name only): ____________________
+Status: **Tester assigned (Từ Hoàng Anh); awaiting the 10-minute session.**
+Tester (not in the team, first name only): Từ Hoàng Anh
 Date: ____________________
 Task: "Find out if you can register your thesis with 118 credits, and where to replace a lost student card."
 Rule: do not help or explain; watch and take notes.
