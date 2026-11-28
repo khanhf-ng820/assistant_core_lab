@@ -302,3 +302,55 @@ alternative.
 | H1 three observations + one fix | 2 |
 | Bonus (streaming or nicer sources) | +1 |
 | **Total** | **10 (+1)** |
+
+## Lab 8 — testing, debugging & red teaming (in progress)
+
+Status: **Starter set up** (`lab08/starter/.venv`, editable install, `.env` from `.env.example`). Baseline: `lab08/practice` is **4 passed**, `lab08/starter` is **60 passed, 3 failed** (2 expected G1 injection tests + `test_settings_repr_hides_secrets` matching `/Users/admin/...`), and `redteam/run_redteam.py` is **11/12 passed**.
+
+Source: `CSC10014_2026_Lab08_Testing_Security_RedTeam_Tutorial.docx.pdf` (24 pages).
+Work done in `lab08/practice/`, `lab08/starter/`, and `lab08/worksheets/`. Root `src/` remains untouched.
+
+Part B warm-up (`lab08/practice/`) and H2 reading are individual exercises; the table below assigns primary PR/evidence ownership and rotation reviewers.
+
+### Team integration & PR registry
+
+| Member | ID | Primary responsibility | Rotation reviewer | Status & PR link | Done when |
+|---|---|---|---|---|---|
+| Nguyễn Phúc Khánh | 25125086 | Team Integration lead: C.2–C.3 logging/bug-report coordination, merge G1 + regression tests + ≥3 mitigations, README, tag `v0.8-tested` | Trần Thành Lợi | Pending | `pytest -q` & `redteam/run_redteam.py` green on `main`; `v0.8-tested` tagged |
+| Trần Phúc Khánh | 25125020 | Part D (D.1–D.5): G1 two injection patterns in `src/assistant_core/guard.py`, secrets/input/OWASP security checks | Nguyễn Minh Khang | Pending | `redteam/run_redteam.py` passes 12/12; `test_security.py` injection & secret tests pass |
+| Lý Tuấn Kiệt | 25125022 | Part B (BUG-1–BUG-3) in `lab08/practice/grades_utils.py` & `test_grades_utils.py` + Part C.1 debugger demo | Trần Phúc Khánh | Pending | 7/7 tests pass in `lab08/practice/test_grades_utils.py`; each fix verified by temporarily reverting |
+| Nguyễn Minh Khang | 25125018 | Part E: 3 regression tests in `tests/test_my_regressions.py` from Week-7 failures + `lab08/worksheets/failure_catalogue.md` (≥3 mitigations) | Đặng Xuân Phát | Pending | 3 regression tests fail on old code and pass on fix; ≥3 mitigations catalogued & tested |
+| Trần Thành Lợi | 25125059 | Part F: red-team exchange (`redteam/cases_for_<team>.jsonl`, run partner cases → `redteam/report.md`, debrief in `lab08/worksheets/redteam_exchange.md`, optional Bonus mitigation) | Lý Tuấn Kiệt | Pending | 8–10 partner cases across all 6 categories + controls; report & debrief recorded |
+| Đặng Xuân Phát | 25125062 | Homework H1 (prove/replace 1 AI-generated function with ≥5 edge-case tests in `docs/ai-use-log.md`) + H2 (OWASP LLM Top 10 reading & two sentences) | Nguyễn Phúc Khánh | Pending | ≥5 H1 tests pass (or function fixed/rewritten) & logged; H2 two sentences recorded |
+
+### Verification commands
+
+```bash
+cd lab08/practice
+../starter/.venv/bin/python -m pytest -q test_grades_utils.py  # baseline: 4 passed (target: 7 passed)
+cd ../starter
+.venv/bin/python -m pytest -q                                  # baseline: 60 passed, 3 failed (target: all green)
+.venv/bin/python redteam/run_redteam.py                        # baseline: 11/12 (target: 12/12)
+```
+
+### Submission checklist
+
+| What | When | How |
+|---|---|---|
+| Seeded bugs fixed (7 tests), G1, 3 regression tests | end of the session (draft PR OK) | PR link on the LMS |
+| Red-team report, failure catalogue, exchange sheet | end of the session | files in the PR |
+| Team merge with ≥ 3 mitigations, tag `v0.8-tested` | 23:59 the day before Lab 9 | Tech Lead: tag link |
+| H1 tests + result; H2 two sentences | 23:59 the day before Lab 9 | PR link on the LMS |
+
+### Grading
+
+| Criterion | Points |
+|---|---|
+| Three seeded bugs fixed, each with a regression test | 2 |
+| G1: red-team suite 12/12 | 1 |
+| Three regression tests from your own failures | 2 |
+| Red-team exchange: cases written, report, debrief | 2 |
+| Failure catalogue with ≥ 3 tested mitigations | 2 |
+| H1 AI-generated function proven or replaced | 1 |
+| Bonus: new mitigation for a partner's finding | +1 |
+| **Total** | **10 (+1)** |
